@@ -100,6 +100,10 @@ export class ProjectsView extends ItemView {
 
     this.component = new App({
       target: this.contentEl,
+      props: {
+        projectId: undefined,
+        viewId: undefined,
+      },
     });
   }
 

@@ -99,6 +99,24 @@
         {/if}
         <slot {project} {view} {source} {frame} />
       </DataFrameProvider>
+    {:else}
+      <div class="projects-empty-state">
+        <h3>{$i18n.t("toolbar.projects.none")}</h3>
+        <p>{$i18n.t("modals.project.create.title")}</p>
+        <button
+          on:click={() => {
+            new CreateProjectModal(
+              $app,
+              $i18n.t("modals.project.create.title"),
+              $i18n.t("modals.project.create.cta"),
+              settings.addProject,
+              createProject()
+            ).open();
+          }}
+        >
+          {$i18n.t("commands.create-project.name")}
+        </button>
+      </div>
     {/if}
   </div>
 </div>
@@ -115,5 +133,27 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
+  }
+
+  .projects-empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    color: var(--text-muted);
+    padding: 24px;
+  }
+
+  .projects-empty-state h3 {
+    margin: 0;
+    color: var(--text-normal);
+    font-size: var(--font-ui-medium);
+  }
+
+  .projects-empty-state p {
+    margin: 0;
   }
 </style>
