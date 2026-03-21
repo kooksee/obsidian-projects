@@ -1,10 +1,41 @@
 import dayjs from "dayjs";
 import { get } from "svelte/store";
 
-import { isDate, type DataRecord } from "src/lib/dataframe/dataframe";
+import { type DataRecord } from "src/lib/dataframe/dataframe";
 import { i18n } from "src/lib/stores/i18n";
 import type { FirstDayOfWeek } from "src/settings/settings";
 import moment from "moment";
+
+const CALENDAR_DATE_FORMATS = [
+  "YYYY-MM-DD",
+  "YYYY-MM-DDTHH:mm",
+  "YYYY-MM-DDTHH:mm:ss",
+  "YYYY-MM-DDTHH:mm:ss.SSS",
+];
+
+export function parseCalendarDate(value: unknown): dayjs.Dayjs | null {
+  if (value instanceof Date) {
+    const parsed = dayjs(value);
+    return parsed.isValid() ? parsed : null;
+  }
+
+  if (typeof value === "string") {
+    const text = value.trim();
+    if (!text) {
+      return null;
+    }
+
+    const strictParsed = dayjs(text, CALENDAR_DATE_FORMATS, true);
+    if (strictParsed.isValid()) {
+      return strictParsed;
+    }
+
+    const fallbackParsed = dayjs(text);
+    return fallbackParsed.isValid() ? fallbackParsed : null;
+  }
+
+  return null;
+}
 
 export type CalendarInterval = "month" | "2weeks" | "week" | "3days" | "day";
 
@@ -66,11 +97,7 @@ export function groupRecordsByField(
   records.forEach((record) => {
     const dateValue = record.values[field];
 
-    const start = dateValue
-      ? isDate(dateValue)
-        ? dayjs(dateValue)
-        : null
-      : null;
+    const start = parseCalendarDate(dateValue);
 
     if (start) {
       const dateStr = start.format("YYYY-MM-DD");

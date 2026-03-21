@@ -7,6 +7,12 @@
   export let value: string;
   export let richText: boolean = false;
 
+  const wikiLinkRegExp = /^\!?\[\[(.*?)(\|(.*?))?\]\]$/;
+  const markdownLinkRegExp = /^\!?\[[^\[]*\]\((.*)\)$/;
+
+  $: renderAsMarkdown =
+    richText || wikiLinkRegExp.test(value) || markdownLinkRegExp.test(value);
+
   const sourcePath = getContext<string>("sourcePath") ?? "";
 
   function useMarkdown(node: HTMLElement, value: string) {
@@ -44,16 +50,16 @@
   }
 </script>
 
-{#if richText}
+{#if renderAsMarkdown}
   <div
+    role="presentation"
     use:useMarkdown={value}
     on:click={handleClick}
     on:mouseover={(event) => {
       handleHoverLink(event, sourcePath);
     }}
-    on:focus
-    on:keypress
-  />
+    on:focus={() => {}}
+  ></div>
 {:else}
   <div>
     {value}

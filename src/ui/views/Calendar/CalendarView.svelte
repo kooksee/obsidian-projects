@@ -37,6 +37,7 @@
     getFirstDayOfWeek,
     groupRecordsByField,
     isCalendarInterval,
+    parseCalendarDate,
     subtractInterval,
   } from "./calendar";
   import Calendar from "./components/Calendar/Calendar.svelte";
@@ -66,7 +67,11 @@
 
   $: dateFields = fields
     .filter((field) => !field.repeated)
-    .filter((field) => field.type === DataFieldType.Date);
+    .filter(
+      (field) =>
+        field.type === DataFieldType.Date ||
+        records.some((record) => parseCalendarDate(record.values[field.name]))
+    );
   $: dateField =
     dateFields.find((field) => config?.dateField === field.name) ??
     dateFields[0];
@@ -108,20 +113,22 @@
 
   function handleRecordChange(date: dayjs.Dayjs, record: DataRecord) {
     if (dateField) {
-      if (dateField.type === DataFieldType.Date) {
-        const newDatetime = dayjs(record.values[dateField.name] as string)
-          .set("year", date.year())
-          .set("month", date.month())
-          .set("date", date.date());
-        api.updateRecord(
-          updateRecordValues(record, {
-            [dateField.name]: newDatetime.format(
-              dateField.typeConfig?.time ? "YYYY-MM-DDTHH:mm" : "YYYY-MM-DD"
-            ),
-          }),
-          fields
-        );
-      }
+      const current =
+        parseCalendarDate(record.values[dateField.name]) ?? dayjs(date);
+
+      const newDatetime = current
+        .set("year", date.year())
+        .set("month", date.month())
+        .set("date", date.date());
+
+      api.updateRecord(
+        updateRecordValues(record, {
+          [dateField.name]: newDatetime.format(
+            dateField.typeConfig?.time ? "YYYY-MM-DDTHH:mm" : "YYYY-MM-DD"
+          ),
+        }),
+        fields
+      );
     }
   }
 
