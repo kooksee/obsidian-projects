@@ -5,6 +5,10 @@
 # npm
 node_modules
 build
+package-lock.json
+
+# Legacy root build artifacts (build output now lives in ./build)
+styles.css
 
 # Don't include the compiled main.js file in the repo.
 # They should be uploaded to GitHub releases instead.

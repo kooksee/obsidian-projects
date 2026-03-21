@@ -1,6 +1,6 @@
 {
-  "id": "obsidian-projects",
-  "name": "Projects",
+  "id": "pprojects",
+  "name": "PProjects",
   "version": "0.0.0-1004",
   "minAppVersion": "1.0.0",
   "description": "Plain text project planning.",
