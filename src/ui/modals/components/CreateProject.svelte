@@ -24,6 +24,11 @@
   import { app } from "src/lib/stores/obsidian";
   import { settings } from "src/lib/stores/settings";
   import { interpolateTemplate } from "src/lib/templates/interpolate";
+  import {
+    applyProjectBlueprint,
+    projectBlueprints,
+    type ProjectBlueprintId,
+  } from "src/lib/projectBlueprints";
   import type { ProjectDefinition } from "src/settings/settings";
 
   export let title: string;
@@ -32,6 +37,7 @@
   export let project: ProjectDefinition;
 
   let originalName = project.name;
+  let blueprint: ProjectBlueprintId = "blank";
 
   $: projects = $settings.projects;
 
@@ -96,6 +102,11 @@
 
     return "";
   }
+
+  function applyBlueprint({ detail: id }: CustomEvent<string>) {
+    blueprint = id as ProjectBlueprintId;
+    project = applyProjectBlueprint(project, blueprint);
+  }
 </script>
 
 <ModalLayout {title}>
@@ -120,6 +131,20 @@
         checked={project.isDefault ?? false}
         on:check={({ detail: isDefault }) =>
           (project = { ...project, isDefault })}
+      />
+    </SettingItem>
+
+    <SettingItem
+      name="Project template"
+      description="Use a preset for product/requirements/sprint workflows"
+    >
+      <Select
+        value={blueprint}
+        options={projectBlueprints.map((x) => ({
+          value: x.id,
+          label: `${x.label} · ${x.description}`,
+        }))}
+        on:change={applyBlueprint}
       />
     </SettingItem>
 

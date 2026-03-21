@@ -83,6 +83,7 @@
 
   div.relative {
     position: relative;
+    flex: 0 0 auto;
   }
 
   div.pinned {

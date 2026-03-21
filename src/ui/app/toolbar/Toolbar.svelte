@@ -20,6 +20,11 @@
   } from "src/settings/settings";
   import { produce } from "immer";
   import ProjectViewOptions from "./viewOptions/ProjectViewOptions.svelte";
+  import { buildQuickFilter, type QuickFilterPreset } from "./quickFilters";
+
+  let quickFilterPreset: QuickFilterPreset = "none";
+  let quickSprint = "";
+  let quickOwner = "me";
 
   export let projects: ProjectDefinition[];
 
@@ -37,6 +42,22 @@
   $: view = projects
     .find((project) => project.id === projectId)
     ?.views?.find((view) => view.id === viewId);
+
+  function applyQuickFilterPreset() {
+    if (!projectId || !view) return;
+
+    const filter = buildQuickFilter(quickFilterPreset, {
+      sprint: quickSprint,
+      owner: quickOwner,
+    });
+
+    settings.updateView(
+      projectId,
+      produce(view, (draft) => {
+        draft.filter = filter;
+      })
+    );
+  }
 </script>
 
 <!--
@@ -128,6 +149,35 @@
   </div>
   <svelte:fragment slot="right">
     {#if view}
+      <div class="quick-filter-toolbar">
+        <label>
+          Quick
+          <select bind:value={quickFilterPreset}>
+            <option value="none">All</option>
+            <option value="current-sprint">Current Sprint</option>
+            <option value="my-tasks">My Tasks</option>
+            <option value="blocked">Blocked</option>
+            <option value="my-sprint">My Sprint</option>
+          </select>
+        </label>
+
+        {#if quickFilterPreset === "current-sprint" || quickFilterPreset === "my-sprint"}
+          <label>
+            Sprint
+            <input bind:value={quickSprint} placeholder="Sprint 2026-03" />
+          </label>
+        {/if}
+
+        {#if quickFilterPreset === "my-tasks" || quickFilterPreset === "my-sprint"}
+          <label>
+            Owner
+            <input bind:value={quickOwner} placeholder="me" />
+          </label>
+        {/if}
+
+        <button on:click={applyQuickFilterPreset}>Apply</button>
+      </div>
+
       <ProjectViewOptions
         {view}
         fields={$dataFrame.fields}
@@ -165,3 +215,35 @@
     {/if}
   </svelte:fragment>
 </ViewToolbar>
+
+<style>
+  .quick-filter-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 10px;
+  }
+
+  .quick-filter-toolbar label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-ui-smaller);
+    color: var(--text-muted);
+  }
+
+  .quick-filter-toolbar select,
+  .quick-filter-toolbar input,
+  .quick-filter-toolbar button {
+    font-size: var(--font-ui-small);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 6px;
+    background: var(--background-primary-alt);
+    color: var(--text-normal);
+    padding: 3px 6px;
+  }
+
+  .quick-filter-toolbar button {
+    cursor: pointer;
+  }
+</style>

@@ -41,6 +41,7 @@
     position: sticky;
 
     display: flex;
+    flex: 0 0 auto;
     align-items: center;
     justify-content: space-between;
     text-align: center;

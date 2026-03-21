@@ -11,4 +11,7 @@ export interface TableConfig {
   readonly sortField?: string;
   readonly sortAsc?: boolean;
   readonly orderFields?: string[];
+  readonly groupByField?: string;
+  readonly groupOrder?: string[];
+  readonly collapsedGroups?: string[];
 }

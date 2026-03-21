@@ -214,6 +214,7 @@
 <style>
   div {
     display: flex;
+    flex: 0 0 auto;
     flex-direction: row;
     align-items: center;
     justify-content: center;

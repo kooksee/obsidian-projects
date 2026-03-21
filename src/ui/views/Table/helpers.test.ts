@@ -3,7 +3,7 @@ import {
   DataFieldType,
   type DataField,
 } from "../../../lib/dataframe/dataframe";
-import { sortFields } from "./helpers";
+import { groupRowsByField, sortFields } from "./helpers";
 
 describe("sortFields", () => {
   it("sort single field", () => {
@@ -102,5 +102,65 @@ describe("sortFields", () => {
     const sorted = sortFields(fields, order);
 
     expect(sorted).toStrictEqual(want);
+  });
+});
+
+describe("groupRowsByField", () => {
+  it("groups rows by selected field", () => {
+    const grouped = groupRowsByField(
+      [
+        { rowId: "1", row: { SP: "SP1" } },
+        { rowId: "2", row: { SP: "SP2" } },
+        { rowId: "3", row: { SP: "SP1" } },
+      ],
+      "SP"
+    );
+
+    expect(grouped).toHaveLength(2);
+    expect(grouped[0]?.label).toBe("SP1");
+    expect(grouped[0]?.rows).toHaveLength(2);
+    expect(grouped[1]?.label).toBe("SP2");
+    expect(grouped[1]?.rows).toHaveLength(1);
+  });
+
+  it("puts empty values into (Empty) group", () => {
+    const grouped = groupRowsByField(
+      [
+        { rowId: "1", row: { SP: "SP1" } },
+        { rowId: "2", row: { SP: "" } },
+        { rowId: "3", row: { SP: undefined } },
+      ],
+      "SP"
+    );
+
+    const emptyGroup = grouped.find((x) => x.label === "(Empty)");
+    expect(emptyGroup?.rows).toHaveLength(2);
+  });
+
+  it("supports list values", () => {
+    const grouped = groupRowsByField(
+      [
+        { rowId: "1", row: { tags: ["SP1", "frontend"] } },
+        { rowId: "2", row: { tags: ["SP1", "frontend"] } },
+      ],
+      "tags"
+    );
+
+    expect(grouped).toHaveLength(1);
+    expect(grouped[0]?.label).toBe("SP1, frontend");
+  });
+
+  it("supports custom group order", () => {
+    const grouped = groupRowsByField(
+      [
+        { rowId: "1", row: { SP: "SP1" } },
+        { rowId: "2", row: { SP: "SP2" } },
+        { rowId: "3", row: { SP: "SP3" } },
+      ],
+      "SP",
+      ["SP2", "SP1"]
+    );
+
+    expect(grouped.map((x) => x.key)).toEqual(["SP2", "SP1", "SP3"]);
   });
 });
