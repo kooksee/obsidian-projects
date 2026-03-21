@@ -1,8 +1,13 @@
-# Dataframe
+# Dataframe（数据帧）
 
-This module contains the main data structure for Projects, the _data frame_.
+该模块定义了 Projects 的核心数据结构：_data frame_。
 
-A data frame contains _data records_ and _data fields_. You can think of records as the rows in a table, and fields as the columns. The example below shows a data frame with four records, and three fields (`due_date`, `published`, and `hours_spent`).
+一个 data frame 包含两部分：
+
+- _data records_（记录，可理解为表格的行）
+- _data fields_（字段，可理解为表格的列）
+
+下面示例展示了 4 条记录、3 个字段（`due_date`、`published`、`hours_spent`）。
 
 | `id`                 | `due_date` | `published` | `hours_spent` |
 | -------------------- | ---------- | ----------- | ------------- |

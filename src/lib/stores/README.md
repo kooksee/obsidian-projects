@@ -1,3 +1,3 @@
-# Stores
+# Stores（状态仓库）
 
-This module contains all [Svelte stores](https://svelte.dev/tutorial/writable-stores) for the app.
+该模块包含应用使用的全部 [Svelte store](https://svelte.dev/tutorial/writable-stores)。

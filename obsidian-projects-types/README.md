@@ -1,31 +1,29 @@
-# Custom View API
+# Custom View API（中文）
 
-_Traveler! Before you venture further, know that there be dragons ahead. Beasts that may lay waste to your plugin, leaving it broken and burned. Continue your journey only if you're willing to accept pain and suffering in your search of greatness._
+> 注意：该 API 仍属于实验性质，后续可能出现不兼容变更。
 
-With the Custom View API you can add your own custom views to the Projects plugin.
+通过 `obsidian-projects-types`，你可以为 Projects 插件注册自定义视图。
 
-**IMPORTANT:** This API is **highly experimental**. If you're interested in building views for Projects, please reach out to me so that I can update you in case of (inevitable) breaking changes.
-
-## Build a custom view
-
-### Install dependencies
+## 安装依赖
 
 ```bash
 npm install --save-dev obsidian-projects-types@latest
 ```
 
+或
+
 ```bash
 yarn add --dev obsidian-projects-types@latest
 ```
 
-### Register a custom view
+## 注册自定义视图
 
-To register a custom view:
+步骤：
 
-1. Create a class that extends `ProjectView`.
-1. Create a method `onRegisterProjectView` that returns a new instance of your view class.
+1. 创建一个继承 `ProjectView` 的类。
+2. 在你的 Obsidian 插件中实现 `onRegisterProjectView`，返回该视图实例。
 
-Below is an example of a custom view:
+示例：
 
 ```ts
 import { Plugin } from "obsidian";
@@ -43,17 +41,14 @@ class MySampleView extends ProjectView {
   }
 
   getDisplayName(): string {
-    return "Sample view";
+    return "示例视图";
   }
 
   getIcon(): string {
     return "apple";
   }
 
-  // onData is called whenever the data has been updated (for whatever reason).
-  // Whenever this function is called, you should invalidate previous data.
-  //
-  // `data`        Contains the parsed data.
+  // 每次数据更新都会调用。你应当在这里替换旧数据渲染。
   async onData({ data }: DataQueryResult) {
     if (this.dataEl) {
       this.dataEl.empty();
@@ -62,14 +57,7 @@ class MySampleView extends ProjectView {
     }
   }
 
-  // onOpens is called whenever the user activates your view.
-  //
-  // `contentEl`    HTML element where you can attach your view.
-  // `config`       JSON object with optional view configuration.
-  // `saveConfig`   Callback to save configuration changes.
-  // `readonly`     If true, you should disable any UI features that updates the
-  //                underlying data. Currently, readonly is only true for
-  //                Dataview projects, where fields may be computed.
+  // 用户激活该视图时调用。
   async onOpen({ contentEl, config, saveConfig, readonly }: ProjectViewProps) {
     console.log("Opening ", this.getDisplayName());
 
@@ -78,16 +66,14 @@ class MySampleView extends ProjectView {
     this.dataEl = contentEl.createEl("div");
   }
 
-  // onOpens is called whenever the user leaves or removes your view.
-  // Use this to clean up any resources you've created.
+  // 用户离开或移除视图时调用。
   async onClose() {
     console.log("Closing ", this.getDisplayName());
   }
 }
 
 export default class MyPlugin extends Plugin {
-  // This method is called by Projects to register your view. The Projects
-  // plugin may call this function multiple times to create the view.
+  // Projects 会调用该方法注册视图（可能调用多次）。
   onRegisterProjectView = () => new MySampleView();
 }
 ```

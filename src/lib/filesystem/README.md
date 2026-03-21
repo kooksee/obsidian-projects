@@ -1,5 +1,5 @@
-# File system
+# File system（文件系统）
 
-Writing unit tests for Obsidian can be tricky, since a lot of the functionality isn't available outside of the Obsidian app.
+在 Obsidian 生态中写单元测试会比较麻烦，因为很多能力只能在应用内使用。
 
-The `filesystem` module abstracts the Obsidian vault so that unit tests can use an in-memory representation of notes.
+`filesystem` 模块通过抽象 Obsidian Vault，让测试可以使用内存中的笔记表示，从而提升可测性。

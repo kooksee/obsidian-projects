@@ -1,136 +1,86 @@
-# Contribute to Projects
+# Projects 贡献指南（中文）
 
-Thank you for considering contributing to Projects! On this page, you'll learn how you can help make Projects even better!
+感谢你愿意为 Projects 贡献代码与反馈！
 
-## Voting for features
+## 你可以怎样贡献
 
-Since the release of Projects, users have requested more features than we have resources to implement. Your voice matters, and we need your help understand what's most important.
+### 1) 提交问题与复现
 
-Help prioritize work by adding a :+1: reaction to issues that are important to you ([see the most requested issues](https://github.com/marcusolsson/obsidian-projects/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc)).
+欢迎提交：
 
-To see what's being working on, check out the [roadmap](https://github.com/users/marcusolsson/projects/4/views/14).
+- Bug 报告
+- 功能建议
+- 交互/文案优化建议
+- 性能与兼容性问题（桌面端/移动端）
 
-## Testing
+建议包含：
 
-Help find bugs and unexpected behavior when using the plugin. Help me find sources of annoyance and frustration before others do. Even reporting small things like losing focus, or a glitchy UI, help improve the overall quality of the plugin. No issues are too small to reports.
+- Obsidian 版本
+- 插件版本
+- 操作系统（macOS / Windows / Linux / iOS / Android）
+- 最小可复现步骤
+- 预期行为与实际行为
 
-## Submitting a pull request
+### 2) 提交 Pull Request
 
-You can work on any issue with the `lifecycle/backlog` label. Before you start working, please announce that you want to do so by commenting on the issue. I'll add the `lifecycle/active` label to let others know that it's being actively worked on by someone.
+建议流程：
 
-## Translations
+1. 先开 issue 说明要改什么（避免重复开发）
+2. 新建分支开发（例如 `fix/xxx`、`feat/xxx`）
+3. 保持单个 PR 聚焦一个问题
+4. 本地通过以下检查后再提交：
+   - `npm run build`
+   - `npm run test`
+   - `npm run lint`
+   - `npm run svelte-check`
 
-[![inlang status badge](https://badge.inlang.com/?url=github.com/marcusolsson/obsidian-projects)](https://fink.inlang.com/github.com/marcusolsson/obsidian-projects)
+### 3) 参与翻译
 
-Help make the Projects display text available in your language!
+翻译相关位置：
 
-If you’re interested in adding a new translation, here’s how you can do it:
+- `src/lib/stores/i18n.ts`
+- `src/lib/stores/translations/*.json`
 
-1. Navigate to `src/lib/stores/i18n.ts.`
-2. Register your language code in the `resources` field.
-3. Create a corresponding `.json` file in the `src/lib/stores/translations` directory.
+新增语言时：
 
-Once the language is already registered, you can contribute in either way:
+1. 在 `i18n.ts` 的 `resources` 中注册语言代码
+2. 在 `translations` 下新增对应语言 JSON
 
-- Directly push the updated `.json` resource.
-- Use the `inlang` platform for a more user-friendly interface by clicking the badge above.
+## 标签建议（维护版）
 
-## Triaging issues
+推荐沿用以下分类：
 
-You can contribute by helping an issue move forward. Depending on the labels on the issue, you can help in different ways:
+### 类型
 
-- Vote for issues that are important to you.
-- Help figuring out how to reproduce bugs.
-- Provide support for ideas by sharing your use case.
-- Find issues that are duplicates of already existing issues.
+- `kind/bug`：缺陷
+- `kind/feature`：新功能
+- `kind/documentation`：文档改进
+- `kind/cleanup`：重构/清理
 
-## Understanding labels
+### 优先级
 
-Projects uses labels for issues to organize work. This section lists all the labels used by the project and what they mean.
+- `priority/critical`：阻塞使用，需优先处理
+- `priority/high`：高优先级
+- `priority/normal`：常规优先级
 
-### Kind
+### 领域
 
-`kind/*` describes the type of issue. All issues **must** have a `kind/*` label.
+- `area/core`
+- `area/views`
+- `area/datasources`
+- `area/integrations`
 
-| Label | Description |
-| ----- | ----------- |
-| `kind/bug` | Something isn't working. |
-| `kind/feature` | New feature request. |
-| `kind/documentation` | Improvements or additions to documentation. |
-| `kind/cleanup` | Cleaning up code, configuration, or technical debt. |
-| `kind/epic` | Issues that contain other issues and design discussions for big changes. |
-| `kind/support` | (Deprecated) Use [Discussions](https://github.com/marcusolsson/obsidian-projects/discussions/categories/help) for support questions. |
+## 代码风格与提交建议
 
-### Triage
+- 尽量小步提交，避免“超大 PR”
+- 避免无关格式化
+- 保持对旧配置、旧数据的兼容
+- 如果涉及设置结构变化，务必补迁移逻辑与测试
 
-When a user creates an issue, it needs to be reviewed, or _triaged_, to be able to label it correctly.
+## 社区协作原则
 
-`triage/*` describes the triage status for an issue.
+- 尊重他人、就事论事
+- 优先提供可复现信息
+- 对新手友好，避免攻击性表达
 
-| Label | Description |
-| ----- | ----------- |
-| `triage/confirmed` | Issue is well-defined and understood. Needs to have a `priority/*` label. |
-| `triage/duplicate` | Issue is a duplicate of another issue. |
-| `triage/needs-information` | Issue needs more information in order to work on it. |
-| `triage/needs-investigation` | Issue needs investigation before it can be confirmed. |
-| `triage/not-reproducible` | Issue can't be reproduced as described. |
-
-### Lifecycle
-
-`lifecycle/*` describes how close the issue is from being resolved.
-
-| Label | Description |
-| ----- | ----------- |
-| `lifecycle/idea` | Possibly useful, but not yet enough support to actually get it done. |
-| `lifecycle/backlog` | Issues that are ready to be worked on. |
-| `lifecycle/active` | Issues is actively being worked on. |
-| `lifecycle/stale` | Issues hasn't seen any activity for 60 days. |
-| `lifecycle/rotten` | Issues hasn't seen any activity for 30 days after being marked as stale. |
-| `lifecycle/frozen` | Frozen issues can't become stale or rotten. |
-
-### Priority
-
-`priority/*` describes how important the issue is. Higher priority means the issue is more likely to be fixed.
-
-| Label | Description |
-| ----- | ----------- |
-| `priority/critical` | Must be must be worked on before anything else. |
-
-### Area
-
-`area/*` describes what part of the plugin the issue relates to.
-
-| Label | Description |
-| ----- | ----------- |
-| `area/core` | Issues related to the core platform. |
-| `area/views` | Issues related to views in general, or for new views.|
-| `area/view/*` | Issues related to a specific view, for example `area/view/table`. |
-| `area/datasources` | Issues related to data sources in general, or for new data sources.|
-| `area/datasource/*` | Issues related to a specific data source, for example `area/datasource/dataview`. |
-| `area/integrations` | Issues related to integrating other tools and plugins with Projects. |
-
-### Operating system
-
-`os/*` gets added to issues related to a specific operating system.
-
-| Label | Description |
-| ----- | ----------- |
-| `os/android` | Issues related to Android devices. |
-| `os/ios` | Issues related to iOS devices. |
-| `os/macos` | Issues related to macOS. |
-| `os/windows` | Issues related to Windows. .|
-| `os/linux` | Issues related to Linux. |
-
-### Miscellanous
-
-Various labels that don't fit in anywhere else.
-
-| Label | Description |
-| ----- | ----------- |
-| `good first issue` | Issues suitable for first-time contributors. |
-| `help wanted` | Issues that are blocked due to lack of technology or expertise. |
-| `ignore-for-release` | Used for pull requests to avoid listing them in the changelog. |
-
-## Still have questions?
-
-If this document didn't answer your questions on how to contribute to Projects, feel free to ask it in [Discussions](https://github.com/marcusolsson/obsidian-projects/discussions/new?category=help).
+详细行为规范见：[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)

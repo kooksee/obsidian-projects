@@ -1,128 +1,76 @@
-# Contributor Covenant Code of Conduct
+# 贡献者行为准则（Contributor Covenant 2.0 中文版）
 
-## Our Pledge
+## 我们的承诺
 
-We as members, contributors, and leaders pledge to make participation in our
-community a harassment-free experience for everyone, regardless of age, body
-size, visible or invisible disability, ethnicity, sex characteristics, gender
-identity and expression, level of experience, education, socio-economic status,
-nationality, personal appearance, race, religion, or sexual identity
-and orientation.
+作为成员、贡献者和维护者，我们承诺让社区参与对所有人都无骚扰、可安心，不因以下因素而受到区别对待：年龄、体型、可见或不可见的残障、族裔、性特征、性别认同和表达、经验水平、教育背景、社会经济地位、国籍、外貌、种族、宗教、性取向等。
 
-We pledge to act and interact in ways that contribute to an open, welcoming,
-diverse, inclusive, and healthy community.
+我们承诺以开放、友善、多元、包容和健康的方式协作。
 
-## Our Standards
+## 行为标准
 
-Examples of behavior that contributes to a positive environment for our
-community include:
+有助于营造良好社区氛围的行为包括：
 
-* Demonstrating empathy and kindness toward other people
-* Being respectful of differing opinions, viewpoints, and experiences
-* Giving and gracefully accepting constructive feedback
-* Accepting responsibility and apologizing to those affected by our mistakes,
-  and learning from the experience
-* Focusing on what is best not just for us as individuals, but for the
-  overall community
+- 对他人保持同理心与善意
+- 尊重不同观点、经验与背景
+- 提供并积极接受建设性反馈
+- 对错误负责，向受影响者道歉并改进
+- 从“对整个社区更好”的角度出发
 
-Examples of unacceptable behavior include:
+不可接受的行为包括：
 
-* The use of sexualized language or imagery, and sexual attention or
-  advances of any kind
-* Trolling, insulting or derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or email
-  address, without their explicit permission
-* Other conduct which could reasonably be considered inappropriate in a
-  professional setting
+- 性暗示语言/图像，或任何形式的性骚扰
+- 人身攻击、侮辱、贬损、钓鱼挑衅
+- 公开或私下骚扰
+- 未经许可公开他人隐私信息（如住址、邮箱）
+- 在职业协作场景下明显不当的其他行为
 
-## Enforcement Responsibilities
+## 执行责任
 
-Community leaders are responsible for clarifying and enforcing our standards of
-acceptable behavior and will take appropriate and fair corrective action in
-response to any behavior that they deem inappropriate, threatening, offensive,
-or harmful.
+维护者负责解释和执行可接受行为标准，并对不当、威胁、冒犯或有害行为采取公平、适当的纠正措施。
 
-Community leaders have the right and responsibility to remove, edit, or reject
-comments, commits, code, wiki edits, issues, and other contributions that are
-not aligned to this Code of Conduct, and will communicate reasons for moderation
-decisions when appropriate.
+维护者有权删除、编辑或拒绝不符合本准则的评论、提交、代码、Wiki 编辑、Issue 或其他贡献，并在适当时说明处理原因。
 
-## Scope
+## 适用范围
 
-This Code of Conduct applies within all community spaces, and also applies when
-an individual is officially representing the community in public spaces.
-Examples of representing our community include using an official e-mail address,
-posting via an official social media account, or acting as an appointed
-representative at an online or offline event.
+本准则适用于所有社区空间，也适用于代表社区进行公开活动时的行为，例如：
 
-## Enforcement
+- 使用官方邮箱
+- 使用官方社交账号发言
+- 在线上/线下活动中以项目代表身份发言
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at
-coc@marcus.se.net.
-All complaints will be reviewed and investigated promptly and fairly.
+## 举报与处理
 
-All community leaders are obligated to respect the privacy and security of the
-reporter of any incident.
+若发生辱骂、骚扰或其他不可接受行为，请向维护者举报：`coc@marcus.se.net`。
 
-## Enforcement Guidelines
+所有投诉将被及时、公正地评估和处理。维护者有义务保护举报人的隐私与安全。
 
-Community leaders will follow these Community Impact Guidelines in determining
-the consequences for any action they deem in violation of this Code of Conduct:
+## 处理分级（执行指南）
 
-### 1. Correction
+### 1. 纠正（Correction）
 
-**Community Impact**: Use of inappropriate language or other behavior deemed
-unprofessional or unwelcome in the community.
+**影响**：使用不当语言或其他不专业/不受欢迎行为。  
+**后果**：维护者私下书面警告，说明问题性质与原因；必要时要求公开道歉。
 
-**Consequence**: A private, written warning from community leaders, providing
-clarity around the nature of the violation and an explanation of why the
-behavior was inappropriate. A public apology may be requested.
+### 2. 警告（Warning）
 
-### 2. Warning
+**影响**：单次或连续违规。  
+**后果**：正式警告；在指定期限内禁止与相关人员互动（含社区内外渠道）。继续违规可能导致临时或永久封禁。
 
-**Community Impact**: A violation through a single incident or series
-of actions.
+### 3. 临时封禁（Temporary Ban）
 
-**Consequence**: A warning with consequences for continued behavior. No
-interaction with the people involved, including unsolicited interaction with
-those enforcing the Code of Conduct, for a specified period of time. This
-includes avoiding interactions in community spaces as well as external channels
-like social media. Violating these terms may lead to a temporary or
-permanent ban.
+**影响**：严重违反社区标准，包括持续不当行为。  
+**后果**：在指定期限内禁止与社区进行任何互动（公开或私下）。违规可能升级为永久封禁。
 
-### 3. Temporary Ban
+### 4. 永久封禁（Permanent Ban）
 
-**Community Impact**: A serious violation of community standards, including
-sustained inappropriate behavior.
+**影响**：持续/模式化违规，骚扰个人，或对特定群体进行攻击与贬损。  
+**后果**：永久禁止在社区进行任何公开互动。
 
-**Consequence**: A temporary ban from any sort of interaction or public
-communication with the community for a specified period of time. No public or
-private interaction with the people involved, including unsolicited interaction
-with those enforcing the Code of Conduct, is allowed during this period.
-Violating these terms may lead to a permanent ban.
+## 归属说明
 
-### 4. Permanent Ban
+本准则改编自 [Contributor Covenant][homepage] 2.0 版本：
+https://www.contributor-covenant.org/version/2/0/code_of_conduct.html
 
-**Community Impact**: Demonstrating a pattern of violation of community
-standards, including sustained inappropriate behavior,  harassment of an
-individual, or aggression toward or disparagement of classes of individuals.
-
-**Consequence**: A permanent ban from any sort of public interaction within
-the community.
-
-## Attribution
-
-This Code of Conduct is adapted from the [Contributor Covenant][homepage],
-version 2.0, available at
-https://www.contributor-covenant.org/version/2/0/code_of_conduct.html.
-
-Community Impact Guidelines were inspired by [Mozilla's code of conduct
-enforcement ladder](https://github.com/mozilla/diversity).
+处理分级参考了 Mozilla 的行为准则执行梯度。
 
 [homepage]: https://www.contributor-covenant.org
-
-For answers to common questions about this code of conduct, see the FAQ at
-https://www.contributor-covenant.org/faq. Translations are available at
-https://www.contributor-covenant.org/translations.

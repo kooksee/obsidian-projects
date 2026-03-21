@@ -1,3 +1,3 @@
-# Templates
+# Templates（模板）
 
-This module contains the logic for interpolating templates.
+该模块实现模板插值（interpolate）相关逻辑。

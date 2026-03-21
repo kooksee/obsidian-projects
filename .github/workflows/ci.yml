@@ -35,7 +35,7 @@ jobs:
       - name: Update manifest-beta.json
         if: github.ref_name == 'main'
         run: |
-          node version-beta-manifest.mjs ${{github.run_number}}
+          node scripts/release/version-beta-manifest.mjs ${{github.run_number}}
           cp manifest-beta.json manifest.json
 
       - name: Create release
