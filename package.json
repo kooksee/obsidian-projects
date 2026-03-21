@@ -2,17 +2,19 @@
   "name": "obsidian-projects",
   "version": "1.17.4",
   "description": "Plain text project planning for Obsidian",
-  "main": "main.js",
+  "packageManager": "pnpm@10.28.2",
+  "main": "build/main.js",
   "scripts": {
     "dev": "node config/build/esbuild.config.mjs",
-    "build": "tsc -noEmit -skipLibCheck && node config/build/esbuild.config.mjs production",
+    "build": "tsc -noEmit -skipLibCheck && node config/build/esbuild.config.mjs production && npm run sass-build && npm run sync-build-manifest",
+    "sync-build-manifest": "node scripts/release/sync-build-manifest.mjs",
     "version": "node scripts/release/version-bump.mjs && git add manifest.json versions.json",
     "test": "jest --config config/test/jest.config.cjs",
     "svelte-check": "svelte-check",
     "lint": "eslint --config config/lint/eslint.config.mjs ./src",
     "format": "prettier -w ./src",
-    "sass-build": "sass ./css/styles.scss ./styles.css",
-    "sass-watch": "sass --watch ./css/styles.scss ./styles.css"
+    "sass-build": "sass ./css/styles.scss ./build/styles.css",
+    "sass-watch": "sass --watch ./css/styles.scss ./build/styles.css"
   },
   "keywords": [],
   "author": "",

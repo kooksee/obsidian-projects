@@ -65,7 +65,7 @@ const buildOptions = {
     sourcemap: prod ? false : "inline",
     treeShaking: true,
     minify: prod,
-    outfile: "main.js",
+    outfile: "build/main.js",
 };
 
 if (prod) {

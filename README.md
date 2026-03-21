@@ -56,18 +56,18 @@ Projects 是一个用于 Obsidian 的项目管理插件，支持以“纯文本�
 
 ## 开发者快速开始
 
-1. 安装依赖：`npm install`
-2. 开发构建（watch）：`npm run dev`
-3. 生产构建：`npm run build`
-4. 测试：`npm run test`
-5. Lint：`npm run lint`
-6. Svelte 检查：`npm run svelte-check`
+1. 安装依赖：`pnpm install`
+2. 开发构建（watch）：`pnpm dev`
+3. 生产构建：`pnpm build`
+4. 测试：`pnpm test`
+5. Lint：`pnpm lint`
+6. Svelte 检查：`pnpm svelte-check`
 
 构建产物：
 
-- `main.js`
-- `manifest.json`
-- `styles.css`
+- `build/main.js`
+- `build/manifest.json`
+- `build/styles.css`
 
 ## 设计原则（沿用）
 

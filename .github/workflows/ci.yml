@@ -37,6 +37,7 @@ jobs:
         run: |
           node scripts/release/version-beta-manifest.mjs ${{github.run_number}}
           cp manifest-beta.json manifest.json
+          node scripts/release/sync-build-manifest.mjs
 
       - name: Create release
         if: github.ref_name == 'main'
@@ -48,7 +49,7 @@ jobs:
           gh release create "$tag" \
             --title="$tag" \
             --prerelease \
-            main.js manifest.json styles.css
+            build/main.js build/manifest.json build/styles.css
 
       - name: Publish build
         if: github.ref_name == 'main'
