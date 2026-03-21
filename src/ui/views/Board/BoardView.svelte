@@ -19,7 +19,7 @@
     sortRecordsContext,
   } from "src/ui/views/helpers";
   import BoardOptionsProvider from "./BoardOptionsProvider.svelte";
-  import { getColumns, getFieldByName } from "./board";
+  import { columnIdToRecordValue, getColumns, getFieldByName } from "./board";
   import { Board } from "./components";
   import type {
     OnRecordAdd,
@@ -85,9 +85,13 @@
     (record, { id: column, records }, trigger) => {
       // Update record groupByField
       if (trigger === "addToColumn" && groupByField?.name) {
+        const noStatus = $i18n.t("views.board.no-status");
         record = updateRecordValues(record, {
-          [groupByField.name]:
-            column === $i18n.t("views.board.no-status") ? null : column,
+          [groupByField.name]: columnIdToRecordValue(
+            column,
+            groupByField,
+            noStatus
+          ),
         });
       }
 
@@ -212,9 +216,11 @@
             field
               ? {
                   [field.name]:
-                    column !== $i18n.t("views.board.no-status")
-                      ? column
-                      : undefined,
+                    columnIdToRecordValue(
+                      column,
+                      field,
+                      $i18n.t("views.board.no-status")
+                    ) ?? undefined,
                 }
               : {}
           ),

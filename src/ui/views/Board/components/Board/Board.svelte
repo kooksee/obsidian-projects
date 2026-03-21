@@ -148,4 +148,18 @@
   div {
     display: flex;
   }
+
+  .projects--board {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .projects--board--column--dndwrapper {
+    flex: 0 0 auto;
+  }
 </style>

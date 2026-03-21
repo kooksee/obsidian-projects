@@ -4,6 +4,7 @@ import {
   DataFieldType,
   isNumber,
   isString,
+  type DataValue,
   type DataField,
   type DataRecord,
 } from "src/lib/dataframe/dataframe";
@@ -30,13 +31,42 @@ export function getFieldsByType(
 export function unique(records: DataRecord[], fieldName: string): string[] {
   const keys = records
     .map((record) => record.values[fieldName])
-    .map((value) => (value && isNumber(value) ? value.toLocaleString() : value))
+    .map((value) => recordValueToColumnId(value))
     .map((value) => (value && isString(value) ? value : null))
     .filter(notEmpty);
 
   const set = new Set(keys);
 
   return [...set];
+}
+
+export function recordValueToColumnId(value: unknown): string | null {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value === "number") {
+    return `${value}`;
+  }
+
+  return null;
+}
+
+export function columnIdToRecordValue(
+  columnId: string,
+  groupByField: DataField | undefined,
+  noStatusLabel: string
+): DataValue | null {
+  if (columnId === noStatusLabel) {
+    return null;
+  }
+
+  if (groupByField?.type === DataFieldType.Number) {
+    const n = Number.parseFloat(columnId);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  return columnId;
 }
 
 export function getColumns(
@@ -114,10 +144,10 @@ function groupRecordsByField(
   records.forEach((record) => {
     const value = record.values[fieldName];
 
-    if (value && isString(value)) {
-      res[value]?.push(record);
-    } else if (value && isNumber(value)) {
-      res[value.toLocaleString()]?.push(record);
+    const key = recordValueToColumnId(value);
+
+    if (key) {
+      res[key]?.push(record);
     } else {
       res[noStatus]?.push(record);
     }
