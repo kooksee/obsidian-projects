@@ -31,7 +31,8 @@ export type GroupedRows = {
 export function groupRowsByField(
   rows: GridRowProps[],
   field: string,
-  groupOrder: string[] = []
+  groupOrder: string[] = [],
+  splitListValues: boolean = false
 ): GroupedRows[] {
   if (!field) {
     return [{ key: "all", label: "All", rows }];
@@ -41,8 +42,30 @@ export function groupRowsByField(
 
   for (const row of rows) {
     const raw = row.row?.[field];
+    if (splitListValues && Array.isArray(raw)) {
+      const values = [...new Set(raw.map((v) => String(v ?? "").trim()))].filter(
+        (v) => v !== ""
+      );
+
+      if (!values.length) {
+        const current = groups.get("__EMPTY__") ?? [];
+        current.push(row);
+        groups.set("__EMPTY__", current);
+      } else {
+        for (const value of values) {
+          const current = groups.get(value) ?? [];
+          current.push(row);
+          groups.set(value, current);
+        }
+      }
+      continue;
+    }
+
     const value = Array.isArray(raw) ? raw.join(", ") : raw;
-    const key = value === undefined || value === null || value === "" ? "__EMPTY__" : String(value);
+    const key =
+      value === undefined || value === null || value === ""
+        ? "__EMPTY__"
+        : String(value);
     const current = groups.get(key) ?? [];
     current.push(row);
     groups.set(key, current);

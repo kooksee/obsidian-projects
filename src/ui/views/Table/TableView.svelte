@@ -93,7 +93,17 @@
 
   $: groupByField = config?.groupByField ?? "";
   $: groupOrder = config?.groupOrder ?? [];
-  $: groupedRows = groupRowsByField(rows, groupByField, groupOrder);
+  $: groupByDataField = fields.find((field) => field.name === groupByField);
+  $: splitListGroupValues =
+    groupByDataField?.type === DataFieldType.String &&
+    groupByDataField?.repeated &&
+    (groupByDataField?.typeConfig?.options?.length ?? 0) > 0;
+  $: groupedRows = groupRowsByField(
+    rows,
+    groupByField,
+    groupOrder,
+    splitListGroupValues
+  );
 
   $: if (groupByField) {
     normalizeGroupSettings();
@@ -219,7 +229,11 @@
         groupByField && groupValue
           ? {
               [groupByField]:
-                groupValue === EMPTY_GROUP ? undefined : groupValue,
+                groupValue === EMPTY_GROUP
+                  ? undefined
+                  : groupByDataField?.repeated
+                    ? [groupValue]
+                    : groupValue,
             }
           : undefined;
 

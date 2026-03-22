@@ -150,6 +150,28 @@ describe("groupRowsByField", () => {
     expect(grouped[0]?.label).toBe("SP1, frontend");
   });
 
+  it("splits list values into independent groups when enabled", () => {
+    const grouped = groupRowsByField(
+      [
+        { rowId: "1", row: { sprint: ["S1", "S2"] } },
+        { rowId: "2", row: { sprint: ["S2"] } },
+        { rowId: "3", row: { sprint: [] } },
+      ],
+      "sprint",
+      [],
+      true
+    );
+
+    expect(grouped.map((x) => x.label)).toEqual(["(Empty)", "S1", "S2"]);
+    expect(grouped.find((x) => x.label === "S1")?.rows.map((r) => r.rowId)).toEqual([
+      "1",
+    ]);
+    expect(grouped.find((x) => x.label === "S2")?.rows.map((r) => r.rowId)).toEqual([
+      "1",
+      "2",
+    ]);
+  });
+
   it("supports custom group order", () => {
     const grouped = groupRowsByField(
       [

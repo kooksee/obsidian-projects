@@ -31,6 +31,23 @@ Projects 是一个用于 Obsidian 的项目管理插件，支持以“纯文本�
 - [接手、运行、调试、发布指南](./docs/接手运行调试发布.md)
 - [项目结构重组说明](./docs/项目结构重组说明.md)
 - [项目管理功能规划与优化清单](./docs/项目管理功能规划与优化清单.md)
+- [Relation 使用指南（多对一 / 多对多）](./docs/Relation使用指南.md)
+
+## Relation 快速上手
+
+Projects 现已支持基于 Obsidian `[[wikilink]]` 的关联字段（Relation）。
+
+- 多对一（单值）：`owner: "[[People/Alice]]"`
+- 多对多（多值）：`reviewers: ["[[People/Alice]]", "[[People/Bob]]"]`
+
+已支持能力：
+
+- Table 编辑时自动规范化 relation 值（裸路径与 `[[...]]` 都可）
+- 过滤支持 relation 值感知匹配（如 `is`、`has-any-of`）
+- 排序按 relation 目标路径归一化排序
+- 编辑弹窗显示 `Linked from`（反向关联只读视图）
+
+详见：[Relation 使用指南（多对一 / 多对多）](./docs/Relation使用指南.md)
 
 ## 项目结构（重组后）
 
