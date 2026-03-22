@@ -103,10 +103,7 @@
     dateFields.find((field) => config?.dateField === field.name) ??
     dateFields[0];
   $: dateFieldHint = dateField
-    ? formatFieldCompatibilityHint(
-        dateFieldCompatibility[dateField.name],
-        t
-      )
+    ? formatFieldCompatibilityHint(dateFieldCompatibility[dateField.name], t)
     : "";
 
   $: booleanFields = fields

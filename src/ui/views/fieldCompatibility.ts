@@ -1,104 +1,109 @@
 import type { DataRecord } from "src/lib/dataframe/dataframe";
 
 export interface FieldCompatibilityStats {
-  readonly total: number;
-  readonly populated: number;
-  readonly compatible: number;
-  readonly incompatible: number;
+    readonly total: number;
+    readonly populated: number;
+    readonly compatible: number;
+    readonly incompatible: number;
 }
 
 type TranslateFn = (key: string, vars?: Record<string, unknown>) => string;
 
 export function evaluateFieldCompatibility(
-  records: DataRecord[],
-  fieldName: string,
-  isCompatible: (value: unknown) => boolean
+    records: DataRecord[],
+    fieldName: string,
+    isCompatible: (value: unknown) => boolean
 ): FieldCompatibilityStats {
-  let populated = 0;
-  let compatible = 0;
+    let populated = 0;
+    let compatible = 0;
 
-  for (const record of records) {
-    const value = record.values[fieldName];
-    if (!hasValue(value)) {
-      continue;
+    for (const record of records) {
+        const value = record.values[fieldName];
+        if (!hasValue(value)) {
+            continue;
+        }
+
+        populated += 1;
+        if (isCompatible(value)) {
+            compatible += 1;
+        }
     }
 
-    populated += 1;
-    if (isCompatible(value)) {
-      compatible += 1;
-    }
-  }
-
-  return {
-    total: records.length,
-    populated,
-    compatible,
-    incompatible: populated - compatible,
-  };
+    return {
+        total: records.length,
+        populated,
+        compatible,
+        incompatible: populated - compatible,
+    };
 }
 
 export function isBoardStatusCompatible(value: unknown): boolean {
-  if (typeof value === "string") {
-    return value.trim().length > 0;
-  }
+    return normalizeBoardStatusValue(value) !== null;
+}
 
-  if (typeof value === "number") {
-    return Number.isFinite(value);
-  }
+export function normalizeBoardStatusValue(value: unknown): string | number | null {
+    if (typeof value === "string") {
+        const normalized = value.trim();
+        return normalized.length > 0 ? normalized : null;
+    }
 
-  return false;
+    if (typeof value === "number") {
+        return Number.isFinite(value) ? value : null;
+    }
+
+    return null;
 }
 
 export function formatFieldCompatibilityOptionLabel(
-  fieldName: string,
-  stats: FieldCompatibilityStats | undefined,
-  t: TranslateFn
+    fieldName: string,
+    stats: FieldCompatibilityStats | undefined,
+    t: TranslateFn
 ): string {
-  if (!stats || stats.populated === 0) {
-    return fieldName;
-  }
+    if (!stats || stats.populated === 0) {
+        return fieldName;
+    }
 
-  return t("views.field-compatibility.option", {
-    name: fieldName,
-    compatible: stats.compatible,
-    populated: stats.populated,
-  });
+    return t("views.field-compatibility.option", {
+        name: fieldName,
+        compatible: stats.compatible,
+        populated: stats.populated,
+    });
 }
 
 export function formatFieldCompatibilityHint(
-  stats: FieldCompatibilityStats | undefined,
-  t: TranslateFn
+    stats: FieldCompatibilityStats | undefined,
+    t: TranslateFn
 ): string {
-  if (!stats) {
-    return "";
-  }
+    if (!stats) {
+        return "";
+    }
 
-  if (stats.populated === 0) {
-    return t("views.field-compatibility.hint-empty");
-  }
+    if (stats.populated === 0) {
+        return t("views.field-compatibility.hint-empty");
+    }
 
-  if (stats.incompatible > 0) {
-    return t("views.field-compatibility.hint-issues", {
-      incompatible: stats.incompatible,
-      compatible: stats.compatible,
-      populated: stats.populated,
+    if (stats.incompatible > 0) {
+        return t("views.field-compatibility.hint-issues", {
+            incompatible: stats.incompatible,
+            compatible: stats.compatible,
+            populated: stats.populated,
+        });
+    }
+
+    return t("views.field-compatibility.hint-good", {
+        compatible: stats.compatible,
+        populated: stats.populated,
     });
-  }
-
-  return t("views.field-compatibility.hint-good", {
-    compatible: stats.compatible,
-    populated: stats.populated,
-  });
 }
 
 function hasValue(value: unknown): boolean {
-  if (value === null || value === undefined) {
-    return false;
-  }
+    if (value === null || value === undefined) {
+        return false;
+    }
 
-  if (typeof value === "string") {
-    return value.trim().length > 0;
-  }
+    if (typeof value === "string") {
+        return value.trim().length > 0;
+    }
 
-  return true;
+    return true;
 }

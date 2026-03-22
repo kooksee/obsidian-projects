@@ -10,6 +10,7 @@ import {
 } from "src/lib/dataframe/dataframe";
 import { notEmpty } from "src/lib/helpers";
 import { i18n } from "src/lib/stores/i18n";
+import { normalizeBoardStatusValue } from "src/ui/views/fieldCompatibility";
 import type { ColumnSettings } from "./types";
 
 export function getFieldByName(
@@ -41,12 +42,13 @@ export function unique(records: DataRecord[], fieldName: string): string[] {
 }
 
 export function recordValueToColumnId(value: unknown): string | null {
-  if (typeof value === "string") {
-    return value;
+  const normalized = normalizeBoardStatusValue(value);
+  if (typeof normalized === "string") {
+    return normalized;
   }
 
-  if (typeof value === "number") {
-    return `${value}`;
+  if (typeof normalized === "number") {
+    return `${normalized}`;
   }
 
   return null;
@@ -61,12 +63,22 @@ export function columnIdToRecordValue(
     return null;
   }
 
+  const normalizedColumn = columnId.trim();
+
+  if (!normalizedColumn) {
+    return null;
+  }
+
   if (groupByField?.type === DataFieldType.Number) {
-    const n = Number.parseFloat(columnId);
+    const n = Number.parseFloat(normalizedColumn);
     return Number.isFinite(n) ? n : null;
   }
 
-  return columnId;
+  if (groupByField?.type === DataFieldType.String) {
+    return normalizeBoardStatusValue(normalizedColumn);
+  }
+
+  return normalizedColumn;
 }
 
 export function getColumns(
