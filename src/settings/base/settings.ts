@@ -168,7 +168,19 @@ export type DateFieldConfig = {
   time?: boolean;
 };
 
-export type FieldConfig = StringFieldConfig & DateFieldConfig;
+export type RelationFieldConfig = {
+  relation?: boolean;
+  relationConfig?: {
+    multiple?: boolean;
+    targetProjectId?: string;
+    displayField?: string;
+  };
+};
+
+export type FieldConfig =
+  & StringFieldConfig
+  & DateFieldConfig
+  & RelationFieldConfig;
 
 export type ShowCommand = {
   readonly project: string;

@@ -5,6 +5,10 @@
   import { Autocomplete, TextInput } from "obsidian-svelte";
   import TextLabel from "./TextLabel.svelte";
   import type { Optional } from "src/lib/dataframe/dataframe";
+  import {
+    normalizeRelationEditorTarget,
+    serializeRelationTargets,
+  } from "src/lib/relation";
 
   export let value: Optional<string>;
   export let onChange: (value: Optional<string>) => void;
@@ -20,6 +24,21 @@
       label: option,
       description: "",
     })) ?? [];
+
+  $: isRelationField = column.typeConfig?.relation === true;
+
+  function normalizeValueForSave(input: Optional<string>): Optional<string> {
+    if (!isRelationField) {
+      return input;
+    }
+
+    const target = normalizeRelationEditorTarget(input);
+    const serialized = serializeRelationTargets(target ? [target] : [], {
+      multiple: false,
+    });
+
+    return typeof serialized === "string" ? serialized : undefined;
+  }
 </script>
 
 <GridCell
@@ -38,7 +57,7 @@
     onChange(undefined);
   }}
   onPaste={async () => {
-    onChange(await navigator.clipboard.readText());
+    onChange(normalizeValueForSave(await navigator.clipboard.readText()));
   }}
 >
   <TextLabel
@@ -64,7 +83,7 @@
             edit = false;
           }
 
-          onChange(value);
+          onChange(normalizeValueForSave(value));
         }}
       />
     {:else}
@@ -84,7 +103,7 @@
             edit = false;
           }
 
-          onChange(value);
+          onChange(normalizeValueForSave(value));
         }}
       />
     {/if}

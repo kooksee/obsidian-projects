@@ -409,7 +409,8 @@
                       {
                         id,
                         values,
-                      }
+                      },
+                      records
                     ).open();
                   }}
                   onRowDelete={(id) => api.deleteRecord(id)}
@@ -500,7 +501,8 @@
               {
                 id,
                 values,
-              }
+              },
+              records
             ).open();
           }}
           onRowDelete={(id) => api.deleteRecord(id)}

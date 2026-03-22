@@ -5,6 +5,7 @@ import {
   isBoolean,
   type DataFrame,
 } from "../../lib/dataframe/dataframe";
+import { parseWikilinkTarget } from "../../lib/relation";
 import type { SortDefinition, SortingCriteria } from "src/settings/settings";
 import type { DataRecord } from "../../lib/dataframe/dataframe";
 
@@ -66,8 +67,8 @@ function sortCriteria(
     return sortBoolean(aval, bval, isAsc);
   }
 
-  aval = aval?.toString().toLocaleLowerCase() ?? "";
-  bval = bval?.toString().toLocaleLowerCase() ?? "";
+  aval = normalizeSortText(aval);
+  bval = normalizeSortText(bval);
 
   const nameLinkRegExp = /^\[\[(.*?)\|(.*?)\]\]$/;
   if (criteria.field === "name") {
@@ -112,4 +113,18 @@ function sortString(a: string, b: string, asc: boolean): number {
   return asc
     ? a.localeCompare(b, undefined, { numeric: true })
     : b.localeCompare(a, undefined, { numeric: true });
+}
+
+function normalizeSortText(value: unknown): string {
+  if (Array.isArray(value)) {
+    return value
+      .map((entry) => normalizeSortText(entry))
+      .join(",")
+      .toLocaleLowerCase();
+  }
+
+  const asText = value?.toString() ?? "";
+  const relationTarget = parseWikilinkTarget(asText);
+
+  return (relationTarget ?? asText).toLocaleLowerCase();
 }

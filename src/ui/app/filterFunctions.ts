@@ -11,7 +11,7 @@ import {
   isOptionalBoolean,
   isOptionalDate,
   isOptionalList,
-} from "src/lib/dataframe/dataframe";
+} from "../../lib/dataframe/dataframe";
 import {
   isBooleanFilterOperator,
   isNumberFilterOperator,
@@ -26,7 +26,11 @@ import {
   type StringFilterOperator,
   type DateFilterOperator,
   type ListFilterOperator,
-} from "src/settings/settings";
+} from "../../settings/settings";
+import {
+  normalizeRelationEditorTarget,
+  parseWikilinkTarget,
+} from "../../lib/relation";
 
 export function matchesCondition(
   cond: FilterCondition,
@@ -110,10 +114,40 @@ export const stringFns: Record<
   StringFilterOperator,
   (left: Optional<string>, right?: string) => boolean
 > = {
-  is: (left, right) => (left ? left == right : false),
-  "is-not": (left, right) => (left ? left != right : true),
-  contains: (left, right) => (left ? left.contains(right ?? "") : false),
-  "not-contains": (left, right) => (left ? !left.contains(right ?? "") : true),
+  is: (left, right) => {
+    if (!left) {
+      return false;
+    }
+
+    if (left === right) {
+      return true;
+    }
+
+    const leftTarget = parseWikilinkTarget(left);
+    const rightTarget = normalizeRelationEditorTarget(right);
+
+    return leftTarget !== null && rightTarget !== null
+      ? leftTarget === rightTarget
+      : false;
+  },
+  "is-not": (left, right) => !stringFns.is(left, right),
+  contains: (left, right) => {
+    if (!left) {
+      return false;
+    }
+
+    if (left.includes(right ?? "")) {
+      return true;
+    }
+
+    const leftTarget = parseWikilinkTarget(left);
+    const rightTarget = normalizeRelationEditorTarget(right);
+
+    return leftTarget !== null && rightTarget !== null
+      ? leftTarget.includes(rightTarget)
+      : false;
+  },
+  "not-contains": (left, right) => !stringFns.contains(left, right),
 };
 
 export const numberFns: Record<
@@ -160,13 +194,15 @@ export const listFns_multitext: Record<
   (left: Optional<DataValue>[], right?: Optional<DataValue>[]) => boolean
 > = {
   "has-any-of": (left, right) => {
-    return right ? right.some((value) => left.includes(value)) : false;
+    return right ? right.some((value) => relationAwareIncludes(left, value)) : false;
   },
   "has-all-of": (left, right) => {
-    return right ? right.every((value) => left.includes(value)) : false;
+    return right ? right.every((value) => relationAwareIncludes(left, value)) : false;
   },
   "has-none-of": (left, right) => {
-    return !(right ? right.some((value) => left.includes(value)) : false);
+    return !(right
+      ? right.some((value) => relationAwareIncludes(left, value))
+      : false);
   },
 };
 
@@ -176,7 +212,7 @@ export const listFns_text: Record<
 > = {
   "has-keyword": (left, right) => {
     return right
-      ? left.some((value) => String(value).contains(String(right)))
+      ? left.some((value) => relationAwareToText(value).includes(String(right)))
       : false;
   },
 };
@@ -185,3 +221,24 @@ export const listFns = {
   ...listFns_multitext,
   ...listFns_text,
 };
+
+function relationAwareIncludes(
+  left: Optional<DataValue>[],
+  right: Optional<DataValue>
+): boolean {
+  if (left.includes(right)) {
+    return true;
+  }
+
+  const rightText = relationAwareToText(right);
+
+  return left.some((value) => relationAwareToText(value) === rightText);
+}
+
+function relationAwareToText(value: Optional<DataValue>): string {
+  if (typeof value === "string") {
+    return normalizeRelationEditorTarget(value) ?? value;
+  }
+
+  return String(value ?? "");
+}

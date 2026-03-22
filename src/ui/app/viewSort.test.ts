@@ -806,3 +806,56 @@ describe("sort empty values to the end", () => {
     });
   });
 });
+
+describe("relation-aware sort", () => {
+  const frame = {
+    fields: [],
+    records: [
+      {
+        id: "Task-2.md",
+        values: {
+          owner: "[[People/Bob|Bobby]]",
+          reviewers: ["[[People/Bob]]", "[[People/Charlie]]"],
+        },
+      },
+      {
+        id: "Task-1.md",
+        values: {
+          owner: "[[People/Alice|Ali]]",
+          reviewers: ["[[People/Alice]]", "[[People/Bob]]"],
+        },
+      },
+      {
+        id: "Task-3.md",
+        values: {
+          owner: "[[People/Charlie]]",
+          reviewers: ["[[People/Charlie]]"],
+        },
+      },
+    ],
+  };
+
+  it("sorts relation string field by wikilink target", () => {
+    const sorted = applySort(frame, {
+      criteria: [{ field: "owner", order: "asc", enabled: true }],
+    });
+
+    expect(sorted.records.map((r) => r.id)).toStrictEqual([
+      "Task-1.md",
+      "Task-2.md",
+      "Task-3.md",
+    ]);
+  });
+
+  it("sorts relation list field by normalized list text", () => {
+    const sorted = applySort(frame, {
+      criteria: [{ field: "reviewers", order: "asc", enabled: true }],
+    });
+
+    expect(sorted.records.map((r) => r.id)).toStrictEqual([
+      "Task-1.md",
+      "Task-2.md",
+      "Task-3.md",
+    ]);
+  });
+});

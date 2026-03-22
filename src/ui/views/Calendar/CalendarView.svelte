@@ -181,7 +181,8 @@
         (record) => {
           api.updateRecord(record, fields);
         },
-        entry
+        entry,
+        records
       ).open();
     }
   }
