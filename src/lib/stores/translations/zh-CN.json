@@ -280,6 +280,11 @@
             },
             "table": {
                 "name": "表格",
+                "group-by": "分组字段",
+                "group-none": "无",
+                "group-multi-mode": "多值分组模式",
+                "group-multi-mode-split": "拆分（同一条记录可出现在多个分组）",
+                "group-multi-mode-first": "仅首值（每条记录仅归属一个分组）",
                 "hide-fields": "隐藏字段",
                 "rename-field": "重命名字段",
                 "rename": "重命名"

@@ -280,6 +280,11 @@
             },
             "table": {
                 "name": "Table",
+                "group-by": "Group by",
+                "group-none": "None",
+                "group-multi-mode": "Multi-value groups",
+                "group-multi-mode-split": "Split (one row can appear in multiple groups)",
+                "group-multi-mode-first": "First only (exactly one group per row)",
                 "hide-fields": "Hide fields",
                 "rename-field": "Rename field",
                 "rename": "Rename"

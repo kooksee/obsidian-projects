@@ -2,6 +2,8 @@ import { produce } from "immer";
 import type { DataField } from "src/lib/dataframe/dataframe";
 import type { GridRowProps } from "./components/DataGrid/dataGrid";
 
+export type ListGroupingMode = "joined" | "split" | "first";
+
 export function sortFields(fields: DataField[], order: string[]) {
   if (!order.length) {
     return fields;
@@ -32,7 +34,7 @@ export function groupRowsByField(
   rows: GridRowProps[],
   field: string,
   groupOrder: string[] = [],
-  splitListValues: boolean = false
+  listGroupingMode: ListGroupingMode = "joined"
 ): GroupedRows[] {
   if (!field) {
     return [{ key: "all", label: "All", rows }];
@@ -42,7 +44,7 @@ export function groupRowsByField(
 
   for (const row of rows) {
     const raw = row.row?.[field];
-    if (splitListValues && Array.isArray(raw)) {
+    if (Array.isArray(raw) && listGroupingMode !== "joined") {
       const values = [...new Set(raw.map((v) => String(v ?? "").trim()))].filter(
         (v) => v !== ""
       );
@@ -51,6 +53,11 @@ export function groupRowsByField(
         const current = groups.get("__EMPTY__") ?? [];
         current.push(row);
         groups.set("__EMPTY__", current);
+      } else if (listGroupingMode === "first") {
+        const first = values[0]!;
+        const current = groups.get(first) ?? [];
+        current.push(row);
+        groups.set(first, current);
       } else {
         for (const value of values) {
           const current = groups.get(value) ?? [];

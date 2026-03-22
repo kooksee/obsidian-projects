@@ -159,13 +159,32 @@ describe("groupRowsByField", () => {
       ],
       "sprint",
       [],
-      true
+      "split"
     );
 
     expect(grouped.map((x) => x.label)).toEqual(["(Empty)", "S1", "S2"]);
     expect(grouped.find((x) => x.label === "S1")?.rows.map((r) => r.rowId)).toEqual([
       "1",
     ]);
+    expect(grouped.find((x) => x.label === "S2")?.rows.map((r) => r.rowId)).toEqual([
+      "1",
+      "2",
+    ]);
+  });
+
+  it("uses first list value when grouping mode is first", () => {
+    const grouped = groupRowsByField(
+      [
+        { rowId: "1", row: { sprint: ["S2", "S1"] } },
+        { rowId: "2", row: { sprint: ["S2"] } },
+        { rowId: "3", row: { sprint: [] } },
+      ],
+      "sprint",
+      [],
+      "first"
+    );
+
+    expect(grouped.map((x) => x.label)).toEqual(["(Empty)", "S2"]);
     expect(grouped.find((x) => x.label === "S2")?.rows.map((r) => r.rowId)).toEqual([
       "1",
       "2",

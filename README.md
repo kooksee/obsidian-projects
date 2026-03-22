@@ -43,6 +43,7 @@ Projects 现已支持基于 Obsidian `[[wikilink]]` 的关联字段（Relation�
 已支持能力：
 
 - Table 编辑时自动规范化 relation 值（裸路径与 `[[...]]` 都可）
+- Table 按多值枚举分组支持模式切换：`split`（可多组）/ `first`（单组）
 - 过滤支持 relation 值感知匹配（如 `is`、`has-any-of`）
 - 排序按 relation 目标路径归一化排序
 - 编辑弹窗显示 `Linked from`（反向关联只读视图）

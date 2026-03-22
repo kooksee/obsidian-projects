@@ -27,12 +27,17 @@
   } from "src/ui/components/Layout";
   import { ConfigureFieldModal } from "src/ui/modals/configureField";
   import { settings } from "src/lib/stores/settings";
-  import { groupRowsByField, sortFields } from "./helpers";
+  import {
+    groupRowsByField,
+    sortFields,
+    type ListGroupingMode,
+  } from "./helpers";
   import type { ProjectDefinition } from "src/settings/settings";
   import { CreateFieldModal } from "src/ui/modals/createFieldModal";
   import { Icon } from "obsidian-svelte";
   import { TextLabel } from "./components/DataGrid/GridCell/GridTextCell";
   import { fieldIcon } from "../helpers";
+  import type { TableGroupMultiValueMode } from "./types";
 
   const EMPTY_GROUP = "(Empty)";
 
@@ -46,6 +51,8 @@
   export let onConfigChange: (cfg: TableConfig) => void;
 
   let buttonEl: HTMLElement;
+  let groupMultiValueMode: TableGroupMultiValueMode = "split";
+  let listGroupingMode: ListGroupingMode = "joined";
 
   function saveConfig(cfg: TableConfig) {
     config = cfg;
@@ -94,15 +101,18 @@
   $: groupByField = config?.groupByField ?? "";
   $: groupOrder = config?.groupOrder ?? [];
   $: groupByDataField = fields.find((field) => field.name === groupByField);
-  $: splitListGroupValues =
+  $: supportsMultiValueGroupingMode =
     groupByDataField?.type === DataFieldType.String &&
-    groupByDataField?.repeated &&
-    (groupByDataField?.typeConfig?.options?.length ?? 0) > 0;
+    groupByDataField?.repeated;
+  $: groupMultiValueMode = config?.groupMultiValueMode ?? "split";
+  $: listGroupingMode = supportsMultiValueGroupingMode
+    ? groupMultiValueMode
+    : "joined";
   $: groupedRows = groupRowsByField(
     rows,
     groupByField,
     groupOrder,
-    splitListGroupValues
+    listGroupingMode
   );
 
   $: if (groupByField) {
@@ -221,6 +231,21 @@
 
   function handleGroupByFieldSelect(evt: Event) {
     handleGroupByFieldChange((evt.currentTarget as HTMLSelectElement).value);
+  }
+
+  function handleGroupMultiValueModeChange(mode: TableGroupMultiValueMode) {
+    saveConfig({
+      ...config,
+      groupMultiValueMode: mode,
+      groupOrder: [],
+      collapsedGroups: [],
+    });
+  }
+
+  function handleGroupMultiValueModeSelect(evt: Event) {
+    handleGroupMultiValueModeChange(
+      (evt.currentTarget as HTMLSelectElement).value as TableGroupMultiValueMode
+    );
   }
 
   function createGroupedNote(groupValue?: string) {
@@ -350,6 +375,29 @@
             {/each}
           </select>
         </label>
+
+        {#if groupByField && supportsMultiValueGroupingMode}
+          <label class="group-by-field">
+            <span class="group-by-label"
+              >{$i18n.t("views.table.group-multi-mode") ||
+                "Multi-value groups"}</span
+            >
+            <select
+              class="group-mode-select"
+              value={groupMultiValueMode}
+              on:change={handleGroupMultiValueModeSelect}
+            >
+              <option value="split"
+                >{$i18n.t("views.table.group-multi-mode-split") ||
+                  "Split (one row can appear in multiple groups)"}</option
+              >
+              <option value="first"
+                >{$i18n.t("views.table.group-multi-mode-first") ||
+                  "First only (exactly one group per row)"}</option
+              >
+            </select>
+          </label>
+        {/if}
       </svelte:fragment>
 
       <svelte:fragment slot="right">
@@ -704,6 +752,11 @@
   .group-by-field select {
     min-width: 160px;
     max-width: 240px;
+  }
+
+  .group-mode-select {
+    min-width: 260px;
+    max-width: min(460px, 48vw);
   }
 
   /* styled as a column header*/
