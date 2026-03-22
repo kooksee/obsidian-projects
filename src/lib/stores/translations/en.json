@@ -360,6 +360,12 @@
                     }
                 },
                 "empty": "This view is empty."
+            },
+            "field-compatibility": {
+                "option": "{{name}} ({{compatible}}/{{populated}})",
+                "hint-good": "Compatible values: {{compatible}}/{{populated}}",
+                "hint-empty": "No values found yet for this field.",
+                "hint-issues": "Incompatible values: {{incompatible}} (compatible {{compatible}}/{{populated}})"
             }
         },
         "components": {

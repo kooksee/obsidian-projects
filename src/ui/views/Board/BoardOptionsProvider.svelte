@@ -16,7 +16,7 @@
 
   export let frame: DataFrame;
 
-  $: ({ fields } = frame);
+  $: ({ fields, records } = frame);
 
   $: columnWidth = config?.columnWidth ?? 270;
 
@@ -50,6 +50,7 @@
       <BoardOptions
         slot="right"
         {fields}
+        {records}
         statusField={config.groupByField}
         checkField={config.checkField}
         onStatusFieldChange={handleStatusFieldChange}

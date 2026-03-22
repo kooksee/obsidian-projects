@@ -360,6 +360,12 @@
                     }
                 },
                 "empty": "该视图还没有数据。"
+            },
+            "field-compatibility": {
+                "option": "{{name}}（{{compatible}}/{{populated}}）",
+                "hint-good": "兼容值：{{compatible}}/{{populated}}",
+                "hint-empty": "该字段暂无值。",
+                "hint-issues": "不兼容值：{{incompatible}}（兼容 {{compatible}}/{{populated}}）"
             }
         },
         "components": {

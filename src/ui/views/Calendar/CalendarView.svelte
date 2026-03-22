@@ -27,6 +27,11 @@
     fieldToSelectableValue,
     getRecordColorContext,
   } from "src/ui/views/helpers";
+  import {
+    evaluateFieldCompatibility,
+    formatFieldCompatibilityHint,
+    formatFieldCompatibilityOptionLabel,
+  } from "src/ui/views/fieldCompatibility";
   import { get } from "svelte/store";
   import {
     addInterval,
@@ -61,6 +66,10 @@
     onConfigChange(cfg);
   }
 
+  function t(key: string, vars?: Record<string, unknown>) {
+    return String(get(i18n).t(key, vars as never));
+  }
+
   $: ({ fields, records } = frame);
 
   let anchorDate: dayjs.Dayjs = dayjs();
@@ -72,9 +81,33 @@
         field.type === DataFieldType.Date ||
         records.some((record) => parseCalendarDate(record.values[field.name]))
     );
+  $: dateFieldCompatibility = Object.fromEntries(
+    dateFields.map((field) => [
+      field.name,
+      evaluateFieldCompatibility(
+        records,
+        field.name,
+        (value) => parseCalendarDate(value) !== null
+      ),
+    ])
+  );
+  $: dateFieldOptions = dateFields.map((field) => ({
+    label: formatFieldCompatibilityOptionLabel(
+      field.name,
+      dateFieldCompatibility[field.name],
+      t
+    ),
+    value: field.name,
+  }));
   $: dateField =
     dateFields.find((field) => config?.dateField === field.name) ??
     dateFields[0];
+  $: dateFieldHint = dateField
+    ? formatFieldCompatibilityHint(
+        dateFieldCompatibility[dateField.name],
+        t
+      )
+    : "";
 
   $: booleanFields = fields
     .filter((field) => !field.repeated)
@@ -195,12 +228,17 @@
       <Typography slot="middle" variant="h2" nomargin>{title}</Typography>
       <svelte:fragment slot="right">
         <Field name={$i18n.t("views.calendar.fields.date")}>
-          <Select
-            value={dateField?.name ?? ""}
-            options={dateFields.map(fieldToSelectableValue)}
-            placeholder={$i18n.t("views.calendar.fields.none") ?? ""}
-            on:change={({ detail }) => handleDateFieldChange(detail)}
-          />
+          <div class="field-select-with-hint">
+            <Select
+              value={dateField?.name ?? ""}
+              options={dateFieldOptions}
+              placeholder={$i18n.t("views.calendar.fields.none") ?? ""}
+              on:change={({ detail }) => handleDateFieldChange(detail)}
+            />
+            {#if dateField}
+              <div class="field-compatibility-hint">{dateFieldHint}</div>
+            {/if}
+          </div>
         </Field>
         <Field name={$i18n.t("views.calendar.fields.check")}>
           <Select
@@ -292,3 +330,19 @@
     </Calendar>
   </ViewContent>
 </ViewLayout>
+
+<style>
+  .field-select-with-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
+  .field-compatibility-hint {
+    font-size: var(--font-ui-smaller);
+    color: var(--text-muted);
+    max-width: 220px;
+    text-align: right;
+  }
+</style>

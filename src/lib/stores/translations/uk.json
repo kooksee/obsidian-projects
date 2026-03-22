@@ -360,6 +360,12 @@
                     }
                 },
                 "empty": "Цей вигляд порожній."
+            },
+            "field-compatibility": {
+                "option": "{{name}} ({{compatible}}/{{populated}})",
+                "hint-good": "Сумісні значення: {{compatible}}/{{populated}}",
+                "hint-empty": "Для цього поля ще немає значень.",
+                "hint-issues": "Несумісні значення: {{incompatible}} (сумісні {{compatible}}/{{populated}})"
             }
         },
         "components": {
