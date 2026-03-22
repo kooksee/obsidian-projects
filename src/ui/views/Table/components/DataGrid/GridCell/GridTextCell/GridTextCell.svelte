@@ -5,6 +5,8 @@
   import { Autocomplete, TextInput } from "obsidian-svelte";
   import TextLabel from "./TextLabel.svelte";
   import type { Optional } from "src/lib/dataframe/dataframe";
+  import { app } from "src/lib/stores/obsidian";
+  import { get } from "svelte/store";
   import {
     normalizeRelationEditorTarget,
     serializeRelationTargets,
@@ -19,13 +21,19 @@
 
   let edit: boolean = false;
 
-  $: options =
+  $: isRelationField = column.typeConfig?.relation === true;
+
+  $: fieldOptions =
     column.typeConfig?.options?.map((option) => ({
       label: option,
       description: "",
     })) ?? [];
 
-  $: isRelationField = column.typeConfig?.relation === true;
+  $: relationOptions = buildRelationOptions(value ?? "");
+
+  $: options = [...fieldOptions, ...relationOptions].filter(
+    (item, index, all) => all.findIndex((x) => x.label === item.label) === index
+  );
 
   function normalizeValueForSave(input: Optional<string>): Optional<string> {
     if (!isRelationField) {
@@ -38,6 +46,46 @@
     });
 
     return typeof serialized === "string" ? serialized : undefined;
+  }
+
+  function buildRelationOptions(input: string) {
+    if (!isRelationField) {
+      return [];
+    }
+
+    const marker = input.lastIndexOf("[[");
+    if (marker < 0) {
+      return [];
+    }
+
+    const query = input
+      .slice(marker + 2)
+      .trim()
+      .toLowerCase();
+    const vault = get(app)?.vault;
+
+    if (!vault) {
+      return [];
+    }
+
+    const targets = vault
+      .getMarkdownFiles()
+      .map((file) => file.path.replace(/\.md$/i, ""))
+      .filter((target) => {
+        if (!query) {
+          return true;
+        }
+
+        const lowerTarget = target.toLowerCase();
+        const basename = lowerTarget.split("/").pop() ?? lowerTarget;
+        return lowerTarget.includes(query) || basename.includes(query);
+      })
+      .slice(0, 50);
+
+    return targets.map((target) => ({
+      label: `[[${target}]]`,
+      description: target,
+    }));
   }
 </script>
 
@@ -66,7 +114,7 @@
     value={value || ""}
   />
   <svelte:fragment slot="edit">
-    {#if options.length > 0}
+    {#if options.length > 0 || isRelationField}
       <Autocomplete
         value={value || ""}
         {options}
