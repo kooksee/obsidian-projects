@@ -38,11 +38,16 @@
   }
 
   function handleTypeChange(value: CustomEvent<string>) {
+    const nextType = value.detail as DataFieldType;
+
     field = {
       ...field,
-      type: value.detail as DataFieldType,
+      type: nextType,
+      repeated: nextType === DataFieldType.List,
     };
   }
+
+  $: selectedFieldType = field.repeated ? DataFieldType.List : field.type;
 
   function handleOptionsChange(options: string[]) {
     field = {
@@ -79,6 +84,7 @@
     { label: $i18n.t("data-types.number"), value: DataFieldType.Number },
     { label: $i18n.t("data-types.boolean"), value: DataFieldType.Boolean },
     { label: $i18n.t("data-types.date"), value: DataFieldType.Date },
+    { label: $i18n.t("data-types.list"), value: DataFieldType.List },
     { label: $i18n.t("data-types.unknown"), value: DataFieldType.Unknown },
   ];
 </script>
@@ -99,8 +105,8 @@
       description={$i18n.t("modals.field.configure.type.description")}
     >
       <Select
-        disabled
-        value={field.type}
+        disabled={!editable}
+        value={selectedFieldType}
         {options}
         on:change={handleTypeChange}
       />
@@ -126,7 +132,17 @@
         />
       </SettingItem>
     {/if}
-    {#if field.type === DataFieldType.String && field.repeated && !field.identifier}
+    {#if (field.type === DataFieldType.String || field.type === DataFieldType.List) && field.repeated && !field.identifier}
+      <SettingItem
+        name={$i18n.t("modals.field.configure.options.name")}
+        description={$i18n.t("modals.field.configure.options.description")}
+        vertical
+      >
+        <MultiTextInput
+          options={field.typeConfig?.options ?? []}
+          onChange={handleOptionsChange}
+        />
+      </SettingItem>
       <SettingItem
         name={$i18n.t("modals.field.configure.rich-text.name")}
         description={$i18n.t("modals.field.configure.rich-text.description")}
@@ -154,6 +170,14 @@
       variant="primary"
       disabled={!!fieldNameError}
       on:click={() => {
+        if (field.type === DataFieldType.List) {
+          field = {
+            ...field,
+            type: DataFieldType.String,
+            repeated: true,
+          };
+        }
+
         // uniquify options items and omit empty
         if (field?.typeConfig && field.typeConfig?.options) {
           const options = field.typeConfig.options;

@@ -1,6 +1,7 @@
 <script lang="ts">
   import {
     DataFieldType,
+    type DataField,
     type DataFrame,
     type DataRecord,
   } from "src/lib/dataframe/dataframe";
@@ -29,6 +30,7 @@
   import { settings } from "src/lib/stores/settings";
   import {
     groupRowsByField,
+    mergeStringOptions,
     sortFields,
     type ListGroupingMode,
   } from "./helpers";
@@ -87,7 +89,7 @@
         width: fieldConfig[field.name]?.width ?? 180,
         hide: fieldConfig[field.name]?.hide ?? false,
         pinned: fieldConfig[field.name]?.pinned ?? false,
-        editable: !field.derived,
+        editable: !isResourceField(field),
       };
 
       return colDef;
@@ -231,6 +233,38 @@
 
   function handleGroupByFieldSelect(evt: Event) {
     handleGroupByFieldChange((evt.currentTarget as HTMLSelectElement).value);
+  }
+
+  function isResourceField(field: DataField): boolean {
+    return field.derived || field.name === "path";
+  }
+
+  function syncFieldOptionsFromRow(row: GridRowProps["row"]) {
+    for (const field of fields) {
+      if (field.type !== DataFieldType.String) {
+        continue;
+      }
+
+      const existingOptions = field.typeConfig?.options;
+      if (!existingOptions) {
+        continue;
+      }
+
+      const nextOptions = mergeStringOptions(existingOptions, row[field.name]);
+      if (nextOptions.length === existingOptions.length) {
+        continue;
+      }
+
+      settings.updateFieldConfig(
+        project.id,
+        field.name,
+        fields.map((f) => f.name),
+        {
+          ...field.typeConfig,
+          options: nextOptions,
+        }
+      );
+    }
   }
 
   function handleGroupMultiValueModeChange(mode: TableGroupMultiValueMode) {
@@ -526,6 +560,7 @@
                     deleteColumnConfig(field);
                   }}
                   onRowChange={(rowId, row) => {
+                    syncFieldOptionsFromRow(row);
                     api.updateRecord({ id: rowId, values: row }, fields);
                   }}
                   onColumnResize={handleWidthChange}
@@ -612,6 +647,7 @@
             deleteColumnConfig(field);
           }}
           onRowChange={(rowId, row) => {
+            syncFieldOptionsFromRow(row);
             api.updateRecord({ id: rowId, values: row }, fields);
           }}
           onColumnResize={handleWidthChange}

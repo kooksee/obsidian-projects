@@ -14,7 +14,7 @@
   } from "obsidian-svelte";
   import { TagsInput } from "src/ui/components/TagsInput";
   import MultiTextInput from "src/ui/components/MultiTextInput/MultiTextInput.svelte";
-  import dayjs from "dayjs";
+  import * as dayjs from "dayjs";
   import {
     DataFieldType,
     type Optional,
@@ -288,7 +288,7 @@
         />
       {/if}
     </SettingItem>
-    {#if !field.repeated && field.type === DataFieldType.String}
+    {#if field.type === DataFieldType.String || field.type === DataFieldType.List}
       <SettingItem
         name={$i18n.t("modals.field.create.options.name")}
         description={$i18n.t("modals.field.create.options.description")}
@@ -299,6 +299,8 @@
           onChange={handleOptionsChange}
         />
       </SettingItem>
+    {/if}
+    {#if field.type === DataFieldType.String || field.type === DataFieldType.List}
       <SettingItem
         name={$i18n.t("modals.field.configure.rich-text.name")}
         description={$i18n.t("modals.field.configure.rich-text.description")}
@@ -326,6 +328,18 @@
       variant={"primary"}
       disabled={!!fieldNameError}
       on:click={() => {
+        // uniquify options items and omit empty
+        if (field?.typeConfig && field.typeConfig?.options) {
+          const options = field.typeConfig.options;
+          field = {
+            ...field,
+            typeConfig: {
+              ...field.typeConfig,
+              options: [...new Set(options)].filter((v) => v !== ""),
+            },
+          };
+        }
+
         if (field.repeated) {
           onCreate(
             { ...field, type: DataFieldType.String }, // remove the temporary `list` type declaration
@@ -340,17 +354,6 @@
             )
           );
         } else if (field.type === DataFieldType.String) {
-          // uniquify options items and omit empty
-          if (field?.typeConfig && field.typeConfig?.options) {
-            const options = field.typeConfig.options;
-            field = {
-              ...field,
-              typeConfig: {
-                ...field.typeConfig,
-                options: [...new Set(options)].filter((v) => v !== ""),
-              },
-            };
-          }
           onCreate(field, value);
         } else {
           onCreate(field, value);

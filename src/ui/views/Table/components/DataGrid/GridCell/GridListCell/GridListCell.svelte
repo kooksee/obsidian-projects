@@ -43,6 +43,7 @@
     slot="edit"
     edit={true}
     values={value || []}
+    options={column.typeConfig?.options ?? []}
     onChange={handleChange}
   />
 </GridCell>

@@ -10,7 +10,8 @@ export class InputDialogModal extends Modal {
     readonly message: string,
     readonly cta: string,
     readonly onSubmit: (value: string) => void,
-    readonly value?: string | undefined
+    readonly value?: string | undefined,
+    readonly options: string[] = []
   ) {
     super(app);
   }
@@ -22,6 +23,7 @@ export class InputDialogModal extends Modal {
         message: this.message,
         cta: this.cta,
         value: this.value ?? "",
+        options: this.options,
         onSubmit: (value: string) => {
           this.onSubmit(value);
           this.close();

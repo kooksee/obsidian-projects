@@ -30,6 +30,29 @@ export type GroupedRows = {
   rows: GridRowProps[];
 };
 
+export function mergeStringOptions(
+  existingOptions: string[],
+  rawValue: unknown
+): string[] {
+  const candidates = (Array.isArray(rawValue) ? rawValue : [rawValue])
+    .map((v) => (typeof v === "string" ? v.trim() : ""))
+    .filter((v) => v !== "");
+
+  if (!candidates.length) {
+    return existingOptions;
+  }
+
+  const nextOptions = [...existingOptions];
+
+  for (const value of candidates) {
+    if (!nextOptions.includes(value)) {
+      nextOptions.push(value);
+    }
+  }
+
+  return nextOptions;
+}
+
 export function groupRowsByField(
   rows: GridRowProps[],
   field: string,

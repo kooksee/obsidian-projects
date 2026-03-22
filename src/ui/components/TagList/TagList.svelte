@@ -13,6 +13,7 @@
   export let values: Optional<DataValue>[];
   export let richText: boolean = false;
   export let edit: boolean = false;
+  export let options: string[] = [];
 
   export let onChange: (values: Optional<DataValue>[]) => void = () => {};
 
@@ -38,9 +39,16 @@
       icon="plus"
       nopadding
       onClick={() => {
-        new InputDialogModal($app, "Add list item", "Add", (value) => {
-          onChange([...values, value]);
-        }).open();
+        new InputDialogModal(
+          $app,
+          "Add list item",
+          "Add",
+          (value) => {
+            onChange([...values, value]);
+          },
+          "",
+          options
+        ).open();
       }}
     />
   {:else}

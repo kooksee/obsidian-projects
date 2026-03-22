@@ -3,7 +3,7 @@ import {
   DataFieldType,
   type DataField,
 } from "../../../lib/dataframe/dataframe";
-import { groupRowsByField, sortFields } from "./helpers";
+import { groupRowsByField, mergeStringOptions, sortFields } from "./helpers";
 
 describe("sortFields", () => {
   it("sort single field", () => {
@@ -203,5 +203,28 @@ describe("groupRowsByField", () => {
     );
 
     expect(grouped.map((x) => x.key)).toEqual(["SP2", "SP1", "SP3"]);
+  });
+});
+
+describe("mergeStringOptions", () => {
+  it("appends a missing scalar option", () => {
+    const merged = mergeStringOptions(["todo", "doing"], "done");
+
+    expect(merged).toEqual(["todo", "doing", "done"]);
+  });
+
+  it("appends missing list options and ignores blanks/duplicates", () => {
+    const merged = mergeStringOptions(
+      ["S1"],
+      ["S2", "", "S1", "  ", "S3", "S2"]
+    );
+
+    expect(merged).toEqual(["S1", "S2", "S3"]);
+  });
+
+  it("returns original options when value is empty", () => {
+    const merged = mergeStringOptions(["A"], undefined);
+
+    expect(merged).toEqual(["A"]);
   });
 });
