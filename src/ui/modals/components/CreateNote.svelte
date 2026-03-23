@@ -27,7 +27,19 @@
     project: ProjectDefinition
   ) => void;
 
-  let templatePath = project.templates.at(0) ?? "";
+  let templatePath = "";
+
+  $: templates = project.templates ?? [];
+  $: hasMultipleTemplates = templates.length > 1;
+  $: {
+    if (templates.length === 0) {
+      templatePath = "";
+    } else if (templates.length === 1) {
+      templatePath = templates[0] ?? "";
+    } else if (!templates.includes(templatePath)) {
+      templatePath = templates[0] ?? "";
+    }
+  }
 
   $: nameError = validateName(name);
 
@@ -113,7 +125,7 @@
       />
     </SettingItem>
 
-    {#if project.templates.length}
+    {#if hasMultipleTemplates}
       <SettingItem
         name={$i18n.t("modals.note.create.templatePath.name")}
         description={$i18n.t("modals.note.create.templatePath.description") ??
@@ -122,7 +134,7 @@
         <Select
           value={templatePath}
           on:change={({ detail: value }) => (templatePath = value)}
-          options={project.templates.map((path) => ({
+          options={templates.map((path) => ({
             label: path,
             value: path,
           }))}
