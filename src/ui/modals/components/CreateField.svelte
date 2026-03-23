@@ -254,7 +254,7 @@
       {:else if field.type === DataFieldType.Number}
         <NumberInput
           bind:ref={inputRef}
-          value={parseInt((value ?? "").toString())}
+          value={Number.isNaN(Number(value)) ? null : Number(value)}
           on:input={(event) => (value = event.detail)}
           on:keydown={(ev) => {
             if (ev.key === "Enter" && !fieldNameError) {

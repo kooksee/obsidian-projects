@@ -20,6 +20,9 @@
   export let selected: boolean;
 
   let edit: boolean = false;
+  let autocompleteValue: string = "";
+  let wikilinkMode: boolean = false;
+  let wikilinkPrefix: string = "";
 
   $: isRelationField = column.typeConfig?.relation === true;
 
@@ -29,15 +32,53 @@
       description: "",
     })) ?? [];
 
-  $: relationOptions = buildRelationOptions(value ?? "");
+  $: relationOptions = buildRelationOptions(autocompleteValue);
+  $: shouldSuggestWikilinks = wikilinkMode;
 
-  $: options = [...fieldOptions, ...relationOptions].filter(
-    (item, index, all) => all.findIndex((x) => x.label === item.label) === index
-  );
+  $: options = shouldSuggestWikilinks ? relationOptions : fieldOptions;
+
+  $: if (!edit) {
+    resetEditState(value || "");
+  }
+
+  $: if (edit && !wikilinkMode && autocompleteValue.includes("[[")) {
+    const context = getWikilinkContext(autocompleteValue);
+    if (context.active) {
+      wikilinkMode = true;
+      wikilinkPrefix = context.prefix;
+      autocompleteValue = context.query;
+    }
+  }
+
+  function resetEditState(input: string) {
+    const context = getWikilinkContext(input);
+    if (context.active) {
+      wikilinkMode = true;
+      wikilinkPrefix = context.prefix;
+      autocompleteValue = context.query;
+      return;
+    }
+
+    wikilinkMode = false;
+    wikilinkPrefix = "";
+    autocompleteValue = input;
+  }
+
+  function getCurrentInput(): string {
+    if (wikilinkMode) {
+      return `${wikilinkPrefix}[[${autocompleteValue}`;
+    }
+    return autocompleteValue;
+  }
 
   function normalizeValueForSave(input: Optional<string>): Optional<string> {
     if (!isRelationField) {
       return input;
+    }
+
+    const unfinished = input?.trim().match(/^\[\[([^\]]+)$/);
+    if (unfinished?.[1]) {
+      input = unfinished[1].trim();
     }
 
     const target = normalizeRelationEditorTarget(input);
@@ -48,44 +89,122 @@
     return typeof serialized === "string" ? serialized : undefined;
   }
 
-  function buildRelationOptions(input: string) {
-    if (!isRelationField) {
+  function buildRelationOptions(queryInput: string) {
+    if (!wikilinkMode && !isRelationField) {
       return [];
     }
 
-    const marker = input.lastIndexOf("[[");
-    if (marker < 0) {
-      return [];
-    }
-
-    const query = input
-      .slice(marker + 2)
-      .trim()
-      .toLowerCase();
-    const vault = get(app)?.vault;
+    const query = queryInput.trim().toLowerCase();
+    const obsidianApp = get(app);
+    const vault = obsidianApp?.vault;
 
     if (!vault) {
       return [];
     }
 
-    const targets = vault
+    const metadataCache = obsidianApp.metadataCache;
+
+    const candidateLinks = vault
       .getMarkdownFiles()
-      .map((file) => file.path.replace(/\.md$/i, ""))
-      .filter((target) => {
-        if (!query) {
-          return true;
-        }
+      .flatMap((file) => {
+        const filePath = file.path.replace(/\.md$/i, "");
+        const basename = file.basename.toLowerCase();
+        const lowerPath = filePath.toLowerCase();
 
-        const lowerTarget = target.toLowerCase();
-        const basename = lowerTarget.split("/").pop() ?? lowerTarget;
-        return lowerTarget.includes(query) || basename.includes(query);
+        const fileScore = rankFileTarget({ basename, lowerPath, query });
+
+        const fileCandidates: Array<{ target: string; score: number }> =
+          fileScore > 0 || !query
+            ? [{ target: filePath, score: fileScore || 1 }]
+            : [];
+
+        const headings =
+          metadataCache
+            ?.getFileCache(file)
+            ?.headings?.map((item) => item?.heading?.trim())
+            .filter((heading): heading is string => Boolean(heading)) ?? [];
+
+        const headingCandidates = headings
+          .filter((heading) => {
+            if (!query) {
+              return false;
+            }
+            return heading.toLowerCase().includes(query);
+          })
+          .slice(0, 5)
+          .map((heading) => ({
+            target: `${filePath}#${heading}`,
+            score: 170,
+          }));
+
+        return [...fileCandidates, ...headingCandidates];
       })
-      .slice(0, 50);
+      .sort((a, b) => b.score - a.score || a.target.localeCompare(b.target))
+      .slice(0, 500);
 
-    return targets.map((target) => ({
-      label: `[[${target}]]`,
+    return candidateLinks.map(({ target }) => ({
+      label: target,
       description: target,
     }));
+  }
+
+  function rankFileTarget({
+    basename,
+    lowerPath,
+    query,
+  }: {
+    basename: string;
+    lowerPath: string;
+    query: string;
+  }): number {
+    if (!query) {
+      return 0;
+    }
+
+    if (basename === query) return 120;
+    if (basename.startsWith(query)) return 100;
+    if (lowerPath === query) return 90;
+    if (lowerPath.startsWith(query)) return 80;
+    if (basename.includes(query)) return 60;
+    if (lowerPath.includes(query)) return 30;
+
+    return 0;
+  }
+
+  function getWikilinkContext(input: string): {
+    active: boolean;
+    prefix: string;
+    query: string;
+  } {
+    const marker = input.lastIndexOf("[[");
+
+    if (marker < 0) {
+      return {
+        active: false,
+        prefix: "",
+        query: "",
+      };
+    }
+
+    return {
+      active: true,
+      prefix: input.slice(0, marker),
+      query: input.slice(marker + 2),
+    };
+  }
+
+  function handleAutocompleteChange(detail: string) {
+    if (!wikilinkMode) {
+      autocompleteValue = detail;
+      return;
+    }
+
+    if (relationOptions.some((item) => item.label === detail)) {
+      autocompleteValue = `${detail}]]`;
+      return;
+    }
+
+    autocompleteValue = detail;
   }
 </script>
 
@@ -105,7 +224,9 @@
     onChange(undefined);
   }}
   onPaste={async () => {
-    onChange(normalizeValueForSave(await navigator.clipboard.readText()));
+    const pasted = await navigator.clipboard.readText();
+    resetEditState(pasted);
+    onChange(normalizeValueForSave(getCurrentInput()));
   }}
 >
   <TextLabel
@@ -114,33 +235,29 @@
     value={value || ""}
   />
   <svelte:fragment slot="edit">
-    {#if options.length > 0 || isRelationField}
+    {#if options.length > 0 || isRelationField || shouldSuggestWikilinks}
       <Autocomplete
-        value={value || ""}
+        bind:value={autocompleteValue}
         {options}
+        maxItems={500}
         embed
         autoFocus
-        on:change={({ detail }) => (value = detail)}
-        on:blur={({ detail: event }) => {
-          if (
-            event.currentTarget instanceof HTMLInputElement &&
-            event.relatedTarget instanceof HTMLDivElement &&
-            !event.relatedTarget.contains(event.currentTarget)
-          ) {
-            selected = false;
-            edit = false;
-          }
-
-          onChange(normalizeValueForSave(value));
+        on:change={({ detail }) => {
+          handleAutocompleteChange(detail);
+        }}
+        on:blur={() => {
+          onChange(normalizeValueForSave(getCurrentInput()));
         }}
       />
     {:else}
       <TextInput
         autoFocus
-        value={value || ""}
+        value={autocompleteValue}
         embed
         width="100%"
-        on:input={({ detail }) => (value = detail)}
+        on:input={({ detail }) => {
+          autocompleteValue = detail;
+        }}
         on:blur={(event) => {
           if (
             event.currentTarget instanceof HTMLInputElement &&
@@ -151,7 +268,7 @@
             edit = false;
           }
 
-          onChange(normalizeValueForSave(value));
+          onChange(normalizeValueForSave(getCurrentInput()));
         }}
       />
     {/if}
