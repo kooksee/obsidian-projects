@@ -481,96 +481,98 @@
               </header>
 
               {#if !isGroupCollapsed(group.key)}
-                <DataGrid
-                  {columns}
-                  rows={group.rows}
-                  {readonly}
-                  colorModel={(rowId) => {
-                    const record = frame.records.find(
-                      (record) => record.id === rowId
-                    );
-                    if (record) {
-                      return getRecordColor(record);
-                    }
-                    return null;
-                  }}
-                  onRowAdd={() => createGroupedNote(group.label)}
-                  onRowEdit={(id, values) => {
-                    new EditNoteModal(
-                      $app,
-                      fields,
-                      (record) => {
-                        api.updateRecord(record, fields);
-                      },
-                      {
-                        id,
-                        values,
-                      },
-                      records
-                    ).open();
-                  }}
-                  onRowDelete={(id) => api.deleteRecord(id)}
-                  onColumnHide={(column) =>
-                    handleVisibilityChange(column.field, false)}
-                  onColumnPin={(column) => handleColumnPin(column.field)}
-                  onColumnConfigure={(column, editable) => {
-                    const field = fields.find(
-                      (field) => field.name === column.field
-                    );
-
-                    if (field) {
-                      new ConfigureFieldModal(
+                <div class="table-group-grid-scroll">
+                  <DataGrid
+                    {columns}
+                    rows={group.rows}
+                    {readonly}
+                    colorModel={(rowId) => {
+                      const record = frame.records.find(
+                        (record) => record.id === rowId
+                      );
+                      if (record) {
+                        return getRecordColor(record);
+                      }
+                      return null;
+                    }}
+                    onRowAdd={() => createGroupedNote(group.label)}
+                    onRowEdit={(id, values) => {
+                      new EditNoteModal(
                         $app,
-                        $i18n.t("modals.field.configure.title"),
-                        field,
-                        fields.filter((f) => f.name !== field.name),
-                        editable,
-                        (field) => {
-                          if (editable) {
-                            if (field.name !== column.field) {
-                              api.updateField(field, column.field);
-                              renameColumnConfig(field.name, column.field);
-                              settings.deleteFieldConfig(
-                                project.id,
-                                column.field
-                              );
-                            } else {
-                              api.updateField(field);
-                            }
-                          }
-
-                          if (field.typeConfig) {
-                            settings.updateFieldConfig(
-                              project.id,
-                              field.name,
-                              fields.map((f) => f.name),
-                              field.typeConfig
-                            );
-                          }
-
-                          saveConfig({ ...config });
-                        }
+                        fields,
+                        (record) => {
+                          api.updateRecord(record, fields);
+                        },
+                        {
+                          id,
+                          values,
+                        },
+                        records
                       ).open();
-                    }
-                  }}
-                  onColumnInsert={handleColumnInsert}
-                  onColumnDelete={(field) => {
-                    api.deleteField(field);
-                    settings.deleteFieldConfig(project.id, field);
-                    deleteColumnConfig(field);
-                  }}
-                  onRowChange={(rowId, row) => {
-                    syncFieldOptionsFromRow(row);
-                    api.updateRecord({ id: rowId, values: row }, fields);
-                  }}
-                  onColumnResize={handleWidthChange}
-                  onColumnSort={(fields) => {
-                    saveConfig({
-                      ...config,
-                      orderFields: fields,
-                    });
-                  }}
-                />
+                    }}
+                    onRowDelete={(id) => api.deleteRecord(id)}
+                    onColumnHide={(column) =>
+                      handleVisibilityChange(column.field, false)}
+                    onColumnPin={(column) => handleColumnPin(column.field)}
+                    onColumnConfigure={(column, editable) => {
+                      const field = fields.find(
+                        (field) => field.name === column.field
+                      );
+
+                      if (field) {
+                        new ConfigureFieldModal(
+                          $app,
+                          $i18n.t("modals.field.configure.title"),
+                          field,
+                          fields.filter((f) => f.name !== field.name),
+                          editable,
+                          (field) => {
+                            if (editable) {
+                              if (field.name !== column.field) {
+                                api.updateField(field, column.field);
+                                renameColumnConfig(field.name, column.field);
+                                settings.deleteFieldConfig(
+                                  project.id,
+                                  column.field
+                                );
+                              } else {
+                                api.updateField(field);
+                              }
+                            }
+
+                            if (field.typeConfig) {
+                              settings.updateFieldConfig(
+                                project.id,
+                                field.name,
+                                fields.map((f) => f.name),
+                                field.typeConfig
+                              );
+                            }
+
+                            saveConfig({ ...config });
+                          }
+                        ).open();
+                      }
+                    }}
+                    onColumnInsert={handleColumnInsert}
+                    onColumnDelete={(field) => {
+                      api.deleteField(field);
+                      settings.deleteFieldConfig(project.id, field);
+                      deleteColumnConfig(field);
+                    }}
+                    onRowChange={(rowId, row) => {
+                      syncFieldOptionsFromRow(row);
+                      api.updateRecord({ id: rowId, values: row }, fields);
+                    }}
+                    onColumnResize={handleWidthChange}
+                    onColumnSort={(fields) => {
+                      saveConfig({
+                        ...config,
+                        orderFields: fields,
+                      });
+                    }}
+                  />
+                </div>
               {/if}
             </section>
           {/each}
@@ -697,7 +699,13 @@
   .table-group {
     border: 1px solid var(--background-modifier-border);
     border-radius: 8px;
-    overflow: hidden;
+    overflow: clip;
+  }
+
+  .table-group-grid-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 
   .table-group > header {
