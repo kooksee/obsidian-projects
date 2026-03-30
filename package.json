@@ -14,6 +14,7 @@
     "lint": "eslint --config config/lint/eslint.config.mjs ./src",
     "format": "prettier -w ./src",
     "sass-build": "sass ./css/styles.scss ./build/styles.css",
+    "install:obsidian": "npm run build && node ./scripts/install-to-obsidian.mjs",
     "sass-watch": "sass --watch ./css/styles.scss ./build/styles.css"
   },
   "keywords": [],

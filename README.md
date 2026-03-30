@@ -7,97 +7,95 @@
 [![Build Obsidian plugin](https://github.com/marcusolsson/obsidian-projects/actions/workflows/ci.yml/badge.svg)](https://github.com/marcusolsson/obsidian-projects/actions/workflows/ci.yml)
 [![Release Obsidian plugin](https://github.com/marcusolsson/obsidian-projects/actions/workflows/release.yml/badge.svg)](https://github.com/marcusolsson/obsidian-projects/actions/workflows/release.yml)
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22obsidian-projects%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
+[![Buy me a coffee](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee)](https://www.buymeacoffee.com/marcusolsson)
+[![Maintenance Status](https://img.shields.io/badge/maintenance-status-brightgreen)](https://github.com/marcusolsson/obsidian-projects/discussions)
 
-# Projects（Obsidian 项目管理插件）
+Projects is a plugin for [Obsidian](https://obsidian.md) that lets you manage and visualize notes for project management.
 
-Projects 是一个用于 Obsidian 的项目管理插件，支持以“纯文本笔记”为中心进行任务与项目管理。
+- Create projects from folders and Dataview queries.
+- Switch between four different views: _Table_, _Board_, _Calendar_, and _Gallery_.
+- Configure note templates for each project.
 
-核心能力：
+For example, if you're a content manager, Projects can help you manage your content calendar. Create drafts, keep track of their status, and when they are scheduled to be published.
 
-- 从文件夹、标签、Dataview 查询创建项目
-- 以四种视图查看项目：表格（Table）、看板（Board）、日历（Calendar）、画廊（Gallery）
-- 为项目配置新建笔记模板
+If you have any questions, or want to stay updated, join our [Discussions](https://github.com/marcusolsson/obsidian-projects/discussions).
 
-## 当前维护状态
-
-> 原作者已在 2025 年停止维护，上游项目已归档。
+> [!IMPORTANT]
+> As of May 2025, I've decided to discontinue this plugin. I created Obsidian Projects because I wanted to scratch my own itch. Unfortunately, I'm no longer using Obsidian, nor following the development of the plugin eco-system. That being said, if there's an interest from the Obsidian community to take over the plugin, I'd be more than happy to facilitate the changes necessary.
 >
-> 如果你希望继续使用，可通过 BRAT 安装或使用社区维护分支。
+> _Edit 2025-07-18:_ It's come to my attention that the plugin has been removed from the community plugin list. If you'd like to keep using the plugin, you can install it with the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin.
 
-## 中文文档入口
+## Installation
 
-- [维护指南](./docs/维护指南.md)
-- [技术栈与优化建议](./docs/技术栈与优化建议.md)
-- [接手、运行、调试、发布指南](./docs/接手运行调试发布.md)
-- [项目结构重组说明](./docs/项目结构重组说明.md)
-- [项目管理功能规划与优化清单](./docs/项目管理功能规划与优化清单.md)
-- [Relation 使用指南（多对一 / 多对多）](./docs/Relation使用指南.md)
+> [!Note]  
+> You must turn off **Restricted mode** to use Projects.
 
-## Relation 快速上手
+1. In Obsidian, open **Settings**.
+1. Under **Community plugins**, select **Browse**.
+1. Search for "Projects" by Marcus Olsson, and then select it.
+1. Select **Install**.
 
-Projects 现已支持基于 Obsidian `[[wikilink]]` 的关联字段（Relation）。
+To get started using Projects, press **Ctrl+P** (or **Cmd+P** on macOS) to open the **Command palette**, and then select **Projects: Show projects**.
 
-- 多对一（单值）：`owner: "[[People/Alice]]"`
-- 多对多（多值）：`reviewers: ["[[People/Alice]]", "[[People/Bob]]"]`
+## Design Philosophy
 
-已支持能力：
+When developing any software, you are often faced with difficult choices. To help guide design decisions, this project adheres to the following principles:
 
-- Table 编辑时自动规范化 relation 值（裸路径与 `[[...]]` 都可）
-- Table 按多值枚举分组支持模式切换：`split`（可多组）/ `first`（单组）
-- 过滤支持 relation 值感知匹配（如 `is`、`has-any-of`）
-- 排序按 relation 目标路径归一化排序
-- 编辑弹窗显示 `Linked from`（反向关联只读视图）
+- **Leave no trace:** The plugin must not leave any plugin-specific configuration in the notes, such as custom front matter properties. Notes may be shared with colleagues and teams who don't use Obsidian. If the user stops using this plugin, they shouldn't have to clean up all their notes.
+- **Keep it native:** The plugin should look and feel like it's native to Obsidian. The plugin should also prefer native Web APIs over custom components whenever possible.
+- **Stability over features:** This plugin is geared towards professionals with high demands on reliability. Any bug reports and usability issues will be prioritized over new features.
 
-详见：[Relation 使用指南（多对一 / 多对多）](./docs/Relation使用指南.md)
+## Roadmap
 
-## 项目结构（重组后）
+If you're curious about what we're working on, check out the roadmap:
 
-- `src/`：插件源码（核心逻辑 + UI）
-  - `src/core/`：插件核心编排层（入口、事件、视图桥接）
-- `config/build/`：构建配置（esbuild）
-- `config/lint/`：Lint 配置（ESLint）
-- `config/test/`：测试配置（Jest）
-- `scripts/release/`：版本与发布脚本
-- `docs/`：维护文档与实践指南
+- [Active issues](https://github.com/marcusolsson/obsidian-projects/issues?q=is%3Aopen+is%3Aissue+sort%3Areactions-%2B1-desc+label%3Alifecycle%2Factive): Issues that are actively being worked on.
+- [Prioritized backlog](https://github.com/marcusolsson/obsidian-projects/issues?q=is%3Aopen+is%3Aissue+label%3Apriority%2Fhigh+sort%3Areactions-%2B1-desc+): Issues we'll be working on next.
+- [Backlog](https://github.com/marcusolsson/obsidian-projects/issues?q=is%3Aopen+is%3Aissue+label%3Alifecycle%2Fbacklog+sort%3Areactions-%2B1-desc): Issues anyone can start working on (please let us know before you do).
+- [Ideas](https://github.com/marcusolsson/obsidian-projects/issues?q=is%3Aopen+is%3Aissue+label%3Alifecycle%2Fidea+sort%3Areactions-%2B1-desc): Promising issues that haven't made it to the backlog yet.
 
-## 安装方式
+To vote for a feature, react to the issue with a :+1:.
 
-### 社区插件市场（若可见）
+- [Most requested issues](https://github.com/marcusolsson/obsidian-projects/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc)
 
-1. 打开 Obsidian 设置
-2. 进入「第三方插件」→「浏览」
-3. 搜索 `Projects`
-4. 安装并启用
+## Contribute
 
-### BRAT（推荐兼容方式）
+For more information on how to contribute to Projects, check out [CONTRIBUTING.md](https://github.com/marcusolsson/obsidian-projects/blob/main/CONTRIBUTING.md). We appreciate bug reports, feature suggestions, PRs for features or translations, and help with issue triage.
 
-如插件不在官方列表，可使用 [BRAT](https://github.com/TfTHacker/obsidian42-brat) 从仓库安装。
+## Learn More
 
-## 开发者快速开始
+If you'd like to see Projects in action, check out any of these amazing resources made by users.
 
-1. 安装依赖：`pnpm install`
-2. 开发构建（watch）：`pnpm dev`
-3. 生产构建：`pnpm build`
-4. 测试：`pnpm test`
-5. Lint：`pnpm lint`
-6. Svelte 检查：`pnpm svelte-check`
+### Videos
 
-构建产物：
+- 2024-12-09: [How to use Obsidian: Project vs Trello](https://www.youtube.com/watch?v=kWpIz0CJXoE) by [+1creator](https://www.youtube.com/@plus1creator)
+- 2024-06-07: [How To Use Obsidian: Project Management (NEW & IMPROVED!)](https://www.youtube.com/watch?v=tYC7n-sDApU) by [+1creator](https://www.youtube.com/@plus1creator)
+- 2023-11-21: [Obsidian Projects - How To Manage Your Projects in Obsidian](https://youtu.be/aFfREf9IQ7Q?t=452) by [Marco Serafini](https://www.youtube.com/@Marco_Mindstone)
+- 2023-11-14: [How To Use Obsidian: Project Management](https://www.youtube.com/watch?v=-ZTo6rcH0a8) by [Jonathan Pritchard](https://www.youtube.com/@zavant)
+- 2023-10-10: [Obsidian Library: How To Keep Track of Your Books in Obsidian](https://youtu.be/_3MSwW51BhU?t=405) by [Marco Serafini](https://www.youtube.com/@Marco_Mindstone)
+- 2023-06-28: [Obsidian Office Hours: First Look at Obsidian Projects](https://www.youtube.com/watch?v=DU7V69n5tIQ) by [@BenCodeZen](https://www.youtube.com/@BenCodeZen)
+- 2023-04-20: [You all NEED these Obsidian community plugins](https://www.youtube.com/watch?v=Yzi1o-BH6QQ&t=1022s) by [@christianlempa](https://www.youtube.com/@christianlempa)
+- 2022-12-10: [Use Obsidian for Content Creation | Build Notion-like Database Views](https://www.youtube.com/watch?v=Ds-VPz7jIwM) by [@amyjuanli](https://www.youtube.com/@amyjuanli)
+- 2022-12-06: [Créer un calendrier éditorial dans Obsidian : Le plugin Projects](https://www.youtube.com/watch?v=Wmx2EoQYrTI) by [@cerveaunumeriquefr](https://www.youtube.com/@cerveaunumeriquefr)
+- 2022-11-23: [Obsidian For Content Creators](https://www.youtube.com/watch?v=jovUqLbqS1Y) by [@FromSergio](https://www.youtube.com/@FromSergio)
+- 2022-11-18: [Notion-like content calendar in Obsidian](https://www.youtube.com/watch?v=ny8lksaQ5A8) by [@nicolevdh](https://www.youtube.com/@nicolevdh)
+- 2022-11-13: [Obsidian Projects: How to Manage Your Note-based Projects in Obsidian](https://www.youtube.com/watch?v=9d9ibSC1TXU) by [@beingpax](https://www.youtube.com/@beingpax)
+- 2022-11-07: [Notion database views in Obsidian Projects plugin](https://www.youtube.com/watch?v=LdaMe2rzAW8) by [@nicolevdh](https://www.youtube.com/@nicolevdh) (interview)
+- 2022-11-07: [Visualiza la base de datos como en Notion dentro de Obsidian](https://www.youtube.com/watch?v=vReObPVS2oo) by [@SniferL4bs](https://www.youtube.com/@SniferL4bs)
 
-- `build/main.js`
-- `build/manifest.json`
-- `build/styles.css`
+### Articles
 
-## 设计原则（沿用）
+- 2023-06-02: [Obsidian Library — How to keep track of your books with Book Search and Projects plugins](https://medium.com/obsidian-observer/obsidian-library-how-to-keep-track-of-your-books-with-book-search-and-projects-plugins-716599633715) by [Marco Serafini](https://medium.com/@marco.ith)
+- 2023-03-16: [The Obsidian Projects Plugin: My Secret Weapon for Staying Organized and Focused](https://www.jordanrobison.net/the-obsidian-projects-plugin-my-secret-weapon-for-staying-organized-and-focused/) by [Jordan Robison](https://www.jordanrobison.net/)
+- 2022-11-19: [Obsidian Projects: A Better Way to Manage Text-Based Projects in Obsidian](https://beingpax.medium.com/obsidian-projects-a-better-way-to-manage-text-based-projects-in-obsidian-18c2a991069c) by [Prakash Joshi Pax](https://beingpax.medium.com/)
+- [How to Set up and Maintain Your Academic Reading List in Obsidian](https://nataliekraneiss.com/your-academic-reading-list-in-obsidian/) by [Natalie Kraneiß](https://nataliekraneiss.com/)
 
-- **不污染数据（Leave no trace）**：尽量不引入插件专属、难迁移的数据结构。
-- **保持原生体验（Keep it native）**：尽量贴近 Obsidian 原生行为与外观。
-- **稳定优先（Stability over features）**：先修 bug 与可用性，再加新功能。
+_Did I miss any? Let me know and I'll add them to the list!_
 
-## 贡献方式
+## Support
 
-请阅读 [CONTRIBUTING.md](./CONTRIBUTING.md)（中文），按约定提交 issue / PR。
+If Projects has been useful to you, consider [buying me a book](https://www.buymeacoffee.com/marcusolsson) to show your support.
 
-## 许可证
+## License
 
-本项目采用 [Apache License 2.0](./LICENSE)。
+Projects is distributed under [Apache License 2.0](LICENSE).
