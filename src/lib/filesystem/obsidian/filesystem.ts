@@ -58,7 +58,7 @@ class ObsidianFile extends IFile {
 }
 
 export class ObsidianFileSystem implements IFileSystem {
-  constructor(readonly app: App) {}
+  constructor(readonly app: App) { }
 
   async create(path: string, content: string): Promise<IFile> {
     const file = await this.app.vault.create(normalizePath(path), content);
@@ -89,9 +89,20 @@ export class ObsidianFileSystem implements IFileSystem {
   }
 
   getFile(path: string): IFile | null {
-    if (this.app.vault.getAbstractFileByPath(path)) {
-      return ObsidianFile.of(path, this.app);
+    const normalizedPath = normalizePath(path.trim());
+    const pathWithoutLeadingSlash = normalizedPath.replace(/^\/+/, "");
+
+    const candidates = Array.from(
+      new Set([normalizedPath, pathWithoutLeadingSlash])
+    );
+
+    for (const candidate of candidates) {
+      const file = this.app.vault.getAbstractFileByPath(candidate);
+      if (file instanceof TFile && file.extension === "md") {
+        return new ObsidianFile(file, this.app);
+      }
     }
+
     return null;
   }
 
@@ -106,7 +117,7 @@ export class ObsidianFileSystem implements IFileSystem {
 // mostly for testability, since the obsidian package is difficult to use in
 // unit tests.
 export class ObsidianFileSystemWatcher implements IFileSystemWatcher {
-  constructor(readonly plugin: Plugin) {}
+  constructor(readonly plugin: Plugin) { }
 
   // onCreate registers an event handler that runs when a file has been created.
   onCreate(callback: (file: IFile) => Promise<void>): void {

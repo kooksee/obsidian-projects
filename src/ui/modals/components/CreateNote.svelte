@@ -29,7 +29,9 @@
 
   let templatePath = "";
 
-  $: templates = project.templates ?? [];
+  $: templates = (project.templates ?? [])
+    .map((path) => path.trim())
+    .filter((path) => path.length > 0);
   $: hasMultipleTemplates = templates.length > 1;
   $: {
     if (templates.length === 0) {

@@ -31,7 +31,7 @@ import { normalizePath } from "obsidian";
  * DataApi writes records to file.
  */
 export class DataApi {
-  constructor(readonly fileSystem: IFileSystem) {}
+  constructor(readonly fileSystem: IFileSystem) { }
 
   async updateRecord(fields: DataField[], record: DataRecord): Promise<void> {
     const file = this.fileSystem.getFile(record.id);
@@ -103,7 +103,8 @@ export class DataApi {
     let content = "";
 
     if (templatePath) {
-      const file = this.fileSystem.getFile(templatePath);
+      const normalizedTemplatePath = normalizePath(templatePath.trim());
+      const file = this.fileSystem.getFile(normalizedTemplatePath);
       if (file) {
         content = await file.read();
         content = interpolateTemplate(content, {
@@ -127,6 +128,10 @@ export class DataApi {
           );
           record.values["tags"] = [...tagSet];
         }
+      } else {
+        console.warn(
+          `[Projects] Template not found: ${normalizedTemplatePath}. Creating note without template content.`
+        );
       }
     }
 
@@ -192,8 +197,13 @@ export function doUpdateRecord(
                     entry[1].getMilliseconds())
               );
 
+              const dateValue = dayjs(entry[1]);
+              if (!dateValue.isValid()) {
+                return entry;
+              }
+
               return produce(entry, (draft) => {
-                draft[1] = dayjs(entry[1]).format(
+                draft[1] = dateValue.format(
                   isDatetime ? "YYYY-MM-DDTHH:mm" : "YYYY-MM-DD"
                 );
               });

@@ -15,7 +15,7 @@ blocking: []
 blocked_by: []
 started:
 completed:
-created: "{{date:YYYY-MM-DD}} {{time:HH:mm}}"
+created: "{{date:YYYY-MM-DDTHH:mm}}"
 tags:
   - issue
 ---
