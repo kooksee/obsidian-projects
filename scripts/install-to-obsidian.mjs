@@ -4,7 +4,6 @@ import process from "node:process";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-const pluginId = "obsidian-projects";
 const requiredFiles = [
     { source: "build/main.js", target: "main.js" },
     { source: "build/manifest.json", target: "manifest.json" },
@@ -15,6 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, "..");
 const preferredDefaultVaultPath = "/Users/barry/git/siyuan/obsidian";
+const legacyPluginIds = ["obsidian-projects", "pprojects"];
 
 const exists = async (targetPath) => {
     try {
@@ -73,6 +73,77 @@ const ensureBuildArtifacts = async () => {
     }
 };
 
+const readJson = async (filePath) => {
+    try {
+        const raw = await fs.readFile(filePath, "utf8");
+        return JSON.parse(raw);
+    } catch {
+        return null;
+    }
+};
+
+const getProjectCount = (data) => {
+    if (!data || !Array.isArray(data.projects)) {
+        return 0;
+    }
+    return data.projects.length;
+};
+
+const resolvePluginId = async () => {
+    const manifestPath = path.join(projectRoot, "build", "manifest.json");
+    const manifest = await readJson(manifestPath);
+
+    const id = manifest?.id;
+    if (typeof id === "string" && id.trim().length > 0) {
+        return id.trim();
+    }
+
+    console.error(`❌ Missing or invalid plugin id in ${manifestPath}`);
+    process.exit(1);
+};
+
+const migrateDataIfNeeded = async (pluginsRootDir, pluginId) => {
+    const targetDataPath = path.join(pluginsRootDir, pluginId, "data.json");
+    const targetData = await readJson(targetDataPath);
+    const targetCount = getProjectCount(targetData);
+
+    let bestSource = null;
+    let bestCount = targetCount;
+
+    for (const id of legacyPluginIds) {
+        if (id === pluginId) {
+            continue;
+        }
+
+        const sourceDataPath = path.join(pluginsRootDir, id, "data.json");
+        const sourceData = await readJson(sourceDataPath);
+        const sourceCount = getProjectCount(sourceData);
+
+        if (sourceCount > bestCount) {
+            bestSource = sourceDataPath;
+            bestCount = sourceCount;
+        }
+    }
+
+    if (!bestSource) {
+        return;
+    }
+
+    await fs.mkdir(path.join(pluginsRootDir, pluginId), { recursive: true });
+
+    try {
+        await fs.access(targetDataPath);
+        const backupPath = `${targetDataPath}.bak.${Date.now()}`;
+        await fs.copyFile(targetDataPath, backupPath);
+        console.log(`ℹ️ Backed up existing data.json to ${backupPath}`);
+    } catch {
+        // no existing data.json, nothing to backup
+    }
+
+    await fs.copyFile(bestSource, targetDataPath);
+    console.log(`✅ Migrated data.json from ${bestSource}`);
+};
+
 const cliVaultPath = process.argv[2];
 const envVaultPath = process.env.OBSIDIAN_VAULT_PATH;
 const preferredVaultPath = (await exists(path.join(preferredDefaultVaultPath, ".obsidian")))
@@ -92,7 +163,7 @@ if (!vaultPath) {
 
 const resolvedVaultPath = path.resolve(vaultPath);
 const obsidianConfigDir = path.join(resolvedVaultPath, ".obsidian");
-const pluginDir = path.join(obsidianConfigDir, "plugins", pluginId);
+const pluginsRootDir = path.join(obsidianConfigDir, "plugins");
 
 try {
     await fs.access(obsidianConfigDir);
@@ -104,9 +175,13 @@ try {
     process.exit(1);
 }
 
+await ensureBuildArtifacts();
+
+const pluginId = await resolvePluginId();
+const pluginDir = path.join(pluginsRootDir, pluginId);
 await fs.mkdir(pluginDir, { recursive: true });
 
-await ensureBuildArtifacts();
+await migrateDataIfNeeded(pluginsRootDir, pluginId);
 
 for (const fileName of requiredFiles) {
     const source = path.join(projectRoot, fileName.source);
