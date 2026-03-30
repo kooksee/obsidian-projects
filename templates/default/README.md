@@ -8,6 +8,7 @@
 - `team-template.md`
 - `product-template.md`
 - `member-template.md`
+- `feature-unit-template.md`
 
 ## 模板约定
 

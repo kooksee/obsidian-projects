@@ -47,6 +47,7 @@ Starter templates are available in `templates/default/`:
 - `team-template.md`
 - `product-template.md`
 - `member-template.md`
+- `feature-unit-template.md`
 
 When you run `npm run install:obsidian`, these templates are now synced automatically to:
 
