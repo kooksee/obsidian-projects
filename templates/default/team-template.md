@@ -7,52 +7,44 @@ backup_lead:
 members: []
 timezone:
 capacity_per_cycle:
-cycle:
 labels: []
 created: "{{date:YYYY-MM-DD}}"
 tags:
-  - team
+	- team
 ---
 
-## Mission
+# {{title}}
+
+创建时间：{{date:YYYY-MM-DD}}
+
+## 团队使命
 
 
-## Team Members
+## 团队成员
 
-| Name | Role | Responsibility |
-| ---- | ---- | -------------- |
-|      |      |                |
+| 姓名 | 角色 | 职责 |
+| ---- | ---- | ---- |
+|      |      |      |
 
-## Ownership
+## 职责边界
 
-- Product area:
-- Tech area:
-- On-call:
+- 业务范围：
+- 技术范围：
+- 值班安排：
 
-## Working Agreements
+## 协作约定
 
-- Definition of Ready:
-- Definition of Done:
-- Review SLA:
+- 开工条件：
+- 完成条件：
+- 评审时效：
 
-## Rituals
+## 例会节奏
 
-- Stand-up:
-- Weekly review:
-- Retrospective:
+- 站会：
+- 周会：
+- 复盘会：
 
-## Capacity & Throughput
+## 团队健康度
 
-- Planned points per cycle:
-- Delivered points per cycle:
-- Carry-over:
-
-## Communication
-
-- Main channel:
-- Decision log:
-
-## Team Health
-
-- Morale:
-- Key blockers:
+- 当前状态：
+- 主要阻塞：

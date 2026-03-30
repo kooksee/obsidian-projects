@@ -7,58 +7,45 @@ health: green
 owner:
 lead:
 team:
-cycle:
 start: "{{date:YYYY-MM-DD}}"
 target:
-review:
 labels: []
 success_metrics: []
-links: []
 tags:
-  - project
+	- project
 ---
 
-## Goal
+# {{title}}
+
+创建时间：{{date:YYYY-MM-DD}}
+
+## 项目目标
 
 
-## Background
+## 项目背景
 
 
-## North Star / Success Metrics
+## 范围说明
 
--
+- 包含：
+- 不包含：
 
-## Scope
+## 里程碑
 
-- In scope:
-- Out of scope:
+| 里程碑 | 负责人 | 目标日期 | 当前状态 |
+| ------ | ------ | -------- | -------- |
+| M1     |        |          | 未开始   |
+| M2     |        |          | 未开始   |
+| M3     |        |          | 未开始   |
 
-## Milestones
+## 风险清单
 
-| Milestone | Owner | Target date | State   |
-| --------- | ----- | ----------- | ------- |
-| M1        |       |             | backlog |
-| M2        |       |             | backlog |
-| M3        |       |             | backlog |
+| 风险项 | 影响 | 应对措施 |
+| ------ | ---- | -------- |
+|        |      |          |
 
-## Risks
+## 周报记录
 
-| Risk | Probability | Impact | Mitigation |
-| ---- | ----------- | ------ | ---------- |
-|      |             |        |            |
-
-## Dependencies
-
--
-
-## Weekly Update
-
-- Progress:
-- Blockers:
-- Next:
-
-## Stakeholders
-
-- Sponsor:
-- PM:
-- Team:
+- 本周进展：
+- 当前阻塞：
+- 下周计划：

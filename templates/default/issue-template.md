@@ -4,64 +4,43 @@ type: issue
 state: backlog
 priority: P2
 estimate: 3
-team:
 project:
-cycle:
+team:
 assignee:
 reporter:
 labels: []
-parent:
-blocking: []
-blocked_by: []
-started:
-completed:
 created: "{{date:YYYY-MM-DDTHH:mm}}"
 tags:
-  - issue
+	- issue
 ---
 
-## Summary
+# {{title}}
+
+创建时间：{{date:YYYY-MM-DD}} {{time:HH:mm}}
+
+## 问题概述
 
 
-## Triage
+## 复现步骤
 
-- Type: bug / feature / chore
-- Severity: low / medium / high / critical
-- Reproducible: yes / no / partial
-- Affected users:
+1. 
+2. 
+3. 
 
-## Steps to Reproduce
-
-1.
-2.
-3.
-
-## Expected Result
+## 期望结果
 
 
-## Actual Result
+## 实际结果
 
 
-## Environment
-
-- Platform:
-- App version:
-- Plugin version:
-
-## Impact
+## 影响范围
 
 
-## Implementation Notes
+## 处理记录
 
 
-## Definition of Done
+## 验收清单
 
-- [ ] Solution implemented and reviewed
-- [ ] Related docs/notes updated
-- [ ] Regression risks checked
-
-## Related
-
-- PR:
-- Spec:
-- Discussion:
+- [ ] 问题已修复
+- [ ] 相关文档已更新
+- [ ] 已完成回归验证

@@ -14,7 +14,7 @@
   } from "obsidian-svelte";
   import { TagsInput } from "src/ui/components/TagsInput";
   import MultiTextInput from "src/ui/components/MultiTextInput/MultiTextInput.svelte";
-  import * as dayjs from "dayjs";
+  import dayjs from "dayjs";
   import {
     DataFieldType,
     type Optional,

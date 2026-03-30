@@ -46,8 +46,19 @@ Starter templates are available in `templates/default/`:
 - `project-template.md`
 - `team-template.md`
 - `product-template.md`
+- `member-template.md`
 
-Copy them into your vault (for example `Templates/Projects/`) and add their paths to your project **Templates** setting.
+When you run `npm run install:obsidian`, these templates are now synced automatically to:
+
+- `/Users/barry/git/siyuan/obsidian/templates` (preferred default vault)
+- or `<vault>/templates` for other vaults
+
+You can override the target with:
+
+- CLI arg #2: `npm run install:obsidian -- "/path/to/vault" "/path/to/templates"`
+- env var: `OBSIDIAN_TEMPLATES_PATH`
+
+Then add template paths to your project **Templates** setting.
 
 ## Design Philosophy
 

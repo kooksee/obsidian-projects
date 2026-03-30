@@ -6,56 +6,53 @@ state: active
 priority: P1
 owner:
 team:
-cycle:
 target_release:
 success_metrics: []
 labels: []
 created: "{{date:YYYY-MM-DD}}"
 tags:
-  - product
+	- product
 ---
 
-## Vision
+# {{title}}
+
+创建时间：{{date:YYYY-MM-DD}}
+
+## 产品愿景
 
 
-## Problem Statement
+## 问题定义
 
 
-## Opportunity Assessment
+## 目标用户
 
-- User pain:
-- Business impact:
-- Confidence:
+- 核心用户：
+- 次要用户：
 
-## Target Users
+## 成功指标
 
-- Primary:
-- Secondary:
+- 指标一：
+- 指标二：
 
-## Success Metrics
+## 约束条件
 
-- Metric 1:
-- Metric 2:
+- 技术约束：
+- 时间约束：
+- 合规约束：
 
-## Constraints
+## 路线图
 
-- Technical:
-- Legal/Compliance:
-- Timeline:
+| 阶段 | 目标产出 | 状态 |
+| ---- | -------- | ---- |
+|      |          |      |
 
-## Roadmap
+## 发布检查
 
-| Quarter | Outcome | Status |
-| ------- | ------- | ------ |
-|         |         |        |
+- [ ] 范围已确认
+- [ ] 关联任务已建立
+- [ ] 验证测试已完成
+- [ ] 发布方案已确认
 
-## Release Readiness
+## 待确认问题
 
-- [ ] Scope locked
-- [ ] Tracking issues linked
-- [ ] QA / UAT complete
-- [ ] Rollout plan defined
-
-## Open Questions
-
--
+- 

@@ -14,7 +14,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, "..");
 const preferredDefaultVaultPath = "/Users/barry/git/siyuan/obsidian";
+const preferredDefaultTemplatesPath = "/Users/barry/git/siyuan/obsidian/templates";
 const legacyPluginIds = ["obsidian-projects", "pprojects"];
+const defaultTemplatesSourceDir = path.join(projectRoot, "templates", "default");
 
 const exists = async (targetPath) => {
     try {
@@ -144,8 +146,35 @@ const migrateDataIfNeeded = async (pluginsRootDir, pluginId) => {
     console.log(`✅ Migrated data.json from ${bestSource}`);
 };
 
+const syncDefaultTemplates = async (sourceDir, targetDir) => {
+    if (!(await exists(sourceDir))) {
+        console.warn(`⚠️ Templates source directory not found: ${sourceDir}`);
+        return [];
+    }
+
+    await fs.mkdir(targetDir, { recursive: true });
+
+    const entries = await fs.readdir(sourceDir, { withFileTypes: true });
+    const copiedPaths = [];
+
+    for (const entry of entries) {
+        if (!entry.isFile()) {
+            continue;
+        }
+
+        const source = path.join(sourceDir, entry.name);
+        const target = path.join(targetDir, entry.name);
+        await fs.copyFile(source, target);
+        copiedPaths.push(target);
+    }
+
+    return copiedPaths;
+};
+
 const cliVaultPath = process.argv[2];
+const cliTemplatesPath = process.argv[3];
 const envVaultPath = process.env.OBSIDIAN_VAULT_PATH;
+const envTemplatesPath = process.env.OBSIDIAN_TEMPLATES_PATH;
 const preferredVaultPath = (await exists(path.join(preferredDefaultVaultPath, ".obsidian")))
     ? preferredDefaultVaultPath
     : null;
@@ -162,6 +191,13 @@ if (!vaultPath) {
 }
 
 const resolvedVaultPath = path.resolve(vaultPath);
+const templatesPath = path.resolve(
+    cliTemplatesPath ??
+        envTemplatesPath ??
+        (resolvedVaultPath === preferredDefaultVaultPath
+            ? preferredDefaultTemplatesPath
+            : path.join(resolvedVaultPath, "templates"))
+);
 const obsidianConfigDir = path.join(resolvedVaultPath, ".obsidian");
 const pluginsRootDir = path.join(obsidianConfigDir, "plugins");
 
@@ -190,9 +226,18 @@ for (const fileName of requiredFiles) {
     await fs.copyFile(source, target);
 }
 
+const syncedTemplateFiles = await syncDefaultTemplates(
+    defaultTemplatesSourceDir,
+    templatesPath
+);
+
 console.log("✅ Installed plugin into Obsidian vault");
 console.log(`Vault:  ${resolvedVaultPath}`);
 console.log(`Target: ${pluginDir}`);
+console.log(`Templates: ${templatesPath}`);
+if (syncedTemplateFiles.length > 0) {
+    console.log(`✅ Synced ${syncedTemplateFiles.length} default templates`);
+}
 
 if (!cliVaultPath && !envVaultPath && preferredVaultPath) {
     if (preferredVaultPath) {

@@ -4,55 +4,42 @@ type: task
 state: todo
 priority: P2
 estimate: 2
-team:
 project:
-cycle:
+team:
 owner:
 assignee:
 labels: []
-parent:
-blocking: []
-blocked_by: []
 due:
-started:
-completed:
 created: "{{date:YYYY-MM-DDTHH:mm}}"
 tags:
-  - task
+	- task
 ---
 
-## Objective
+# {{title}}
+
+创建时间：{{date:YYYY-MM-DD}} {{time:HH:mm}}
+
+## 任务目标
 
 
-## Context
+## 背景说明
 
 
-## Scope
+## 执行步骤
 
-- In scope:
-- Out of scope:
+1. 
+2. 
+3. 
 
-## Acceptance Criteria
+## 验收标准
 
-- [ ]
-- [ ]
+- [ ] 标准一
+- [ ] 标准二
 
-## Plan
+## 风险与依赖
 
-1.
-2.
-3.
+- 风险：
+- 依赖：
 
-## Risks / Dependencies
-
-- Risks:
-- Dependencies:
-
-## Definition of Done
-
-- [ ] Acceptance criteria met
-- [ ] Linked issue/project updated
-- [ ] Notes/docs synced
-
-## Notes
+## 备注
 
