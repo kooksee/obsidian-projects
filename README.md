@@ -37,6 +37,17 @@ If you have any questions, or want to stay updated, join our [Discussions](https
 
 To get started using Projects, press **Ctrl+P** (or **Cmd+P** on macOS) to open the **Command palette**, and then select **Projects: Show projects**.
 
+## Local development
+
+For local debugging, you can build and install the plugin into your vault in one command.
+
+```bash
+npm run install:obsidian -- "/absolute/path/to/your/ObsidianVault"
+```
+
+- This command builds the plugin and copies `main.js`, `manifest.json`, and `styles.css` into `.obsidian/plugins/obsidian-projects` in the target vault.
+- You can also set `OBSIDIAN_VAULT_PATH` and run `npm run install:obsidian` without arguments.
+
 ## Design Philosophy
 
 When developing any software, you are often faced with difficult choices. To help guide design decisions, this project adheres to the following principles:
