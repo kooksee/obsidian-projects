@@ -37,6 +37,18 @@ If you have any questions, or want to stay updated, join our [Discussions](https
 
 To get started using Projects, press **Ctrl+P** (or **Cmd+P** on macOS) to open the **Command palette**, and then select **Projects: Show projects**.
 
+## Default templates
+
+Starter templates are available in `templates/default/`:
+
+- `issue-template.md`
+- `task-template.md`
+- `project-template.md`
+- `team-template.md`
+- `product-template.md`
+
+Copy them into your vault (for example `Templates/Projects/`) and add their paths to your project **Templates** setting.
+
 ## Design Philosophy
 
 When developing any software, you are often faced with difficult choices. To help guide design decisions, this project adheres to the following principles:
