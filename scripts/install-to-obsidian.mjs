@@ -5,7 +5,11 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const pluginId = "obsidian-projects";
-const requiredFiles = ["main.js", "manifest.json", "styles.css"];
+const requiredFiles = [
+    { source: "build/main.js", target: "main.js" },
+    { source: "build/manifest.json", target: "manifest.json" },
+    { source: "build/styles.css", target: "styles.css" },
+];
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -45,10 +49,10 @@ const runBuild = async () => {
 const ensureBuildArtifacts = async () => {
     const missingFiles = [];
 
-    for (const fileName of requiredFiles) {
-        const source = path.join(projectRoot, fileName);
+    for (const file of requiredFiles) {
+        const source = path.join(projectRoot, file.source);
         if (!(await exists(source))) {
-            missingFiles.push(fileName);
+            missingFiles.push(file.source);
         }
     }
 
@@ -105,8 +109,8 @@ await fs.mkdir(pluginDir, { recursive: true });
 await ensureBuildArtifacts();
 
 for (const fileName of requiredFiles) {
-    const source = path.join(projectRoot, fileName);
-    const target = path.join(pluginDir, fileName);
+    const source = path.join(projectRoot, fileName.source);
+    const target = path.join(pluginDir, fileName.target);
 
     await fs.copyFile(source, target);
 }
