@@ -42,6 +42,19 @@ export const DEFAULT_SETTINGS: ProjectsPluginSettings<
     locale: {
       firstDayOfWeek: "default",
     },
+    templates: {
+      rootDir: "templates/system",
+      defaultType: "task",
+      typeMap: {
+        issue: "issue-template.md",
+        task: "task-template.md",
+        project: "project-template.md",
+        team: "team-template.md",
+        product: "product-template.md",
+        member: "member-template.md",
+        feature_unit: "feature-unit-template.md",
+      },
+    },
     commands: [],
     linkBehavior: "open-editor",
   },
@@ -73,9 +86,31 @@ export type UnresolvedSettings = {
 export function resolve(
   unresolved: UnresolvedSettings
 ): ProjectsPluginSettings<ProjectDefinition<ViewDefinition>> {
+  const unresolvedPreferences = unresolved.preferences;
+
   return {
     ...DEFAULT_SETTINGS,
     ...unresolved,
+    preferences: {
+      ...DEFAULT_SETTINGS.preferences,
+      ...unresolvedPreferences,
+      frontmatter: {
+        ...DEFAULT_SETTINGS.preferences.frontmatter,
+        ...unresolvedPreferences?.frontmatter,
+      },
+      locale: {
+        ...DEFAULT_SETTINGS.preferences.locale,
+        ...unresolvedPreferences?.locale,
+      },
+      templates: {
+        ...DEFAULT_SETTINGS.preferences.templates,
+        ...unresolvedPreferences?.templates,
+        typeMap: {
+          ...DEFAULT_SETTINGS.preferences.templates.typeMap,
+          ...unresolvedPreferences?.templates?.typeMap,
+        },
+      },
+    },
     projects: unresolved.projects?.map(resolveProject) ?? [],
   };
 }

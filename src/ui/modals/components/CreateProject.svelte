@@ -17,7 +17,6 @@
 
   import { FileListInput } from "src/ui/components/FileListInput";
   import { Accordion, AccordionItem } from "src/ui/components/Accordion";
-  import { notEmpty } from "src/lib/helpers";
   import { getFoldersInFolder, isValidPath } from "src/lib/obsidian";
   import { capabilities } from "src/lib/stores/capabilities";
   import { i18n } from "src/lib/stores/i18n";
@@ -339,18 +338,6 @@
         </SettingItem>
 
         <SettingItem
-          name={$i18n.t("modals.project.templates.name")}
-          description={$i18n.t("modals.project.templates.description") ?? ""}
-          vertical
-        >
-          <FileListInput
-            buttonText={$i18n.t("modals.project.templates.add")}
-            paths={project.templates ?? []}
-            onPathsChange={(templates) => (project = { ...project, templates })}
-          />
-        </SettingItem>
-
-        <SettingItem
           name={$i18n.t("modals.project.exclude.name")}
           description={$i18n.t("modals.project.exclude.description") ?? ""}
           vertical
@@ -372,7 +359,7 @@
       on:click={() => {
         onSave({
           ...project,
-          templates: project.templates?.filter(notEmpty) ?? [],
+          templates: [],
         });
       }}>{cta}</Button
     >

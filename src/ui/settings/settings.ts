@@ -9,6 +9,7 @@ import type {
   LinkBehavior,
   ProjectId,
   ProjectsPluginPreferences,
+  TemplateType,
 } from "src/settings/settings";
 import { i18n } from "src/lib/stores/i18n";
 
@@ -140,6 +141,86 @@ export class ProjectsSettingTab extends PluginSettingTab {
       .setName(get(i18n).t("settings.commands.name"))
       .setDesc(get(i18n).t("settings.commands.desc"))
       .setHeading();
+
+    new Setting(containerEl)
+      .setName("Templates")
+      .setDesc("Configure built-in template directory and type mapping")
+      .setHeading();
+
+    new Setting(containerEl)
+      .setName("Template root directory")
+      .setDesc("Path inside vault where template files are stored")
+      .addText((text) =>
+        text
+          .setValue(preferences.templates.rootDir)
+          .setPlaceholder("templates/system")
+          .onChange((value) => {
+            save({
+              ...preferences,
+              templates: {
+                ...preferences.templates,
+                rootDir: value.trim() || "templates/system",
+              },
+            });
+          })
+      );
+
+    new Setting(containerEl)
+      .setName("Default template type")
+      .setDesc("Used when creating new notes")
+      .addDropdown((dropdown) => {
+        dropdown
+          .addOption("issue", "Issue")
+          .addOption("task", "Task")
+          .addOption("project", "Project")
+          .addOption("team", "Team")
+          .addOption("product", "Product")
+          .addOption("member", "Member")
+          .addOption("feature_unit", "Feature Unit")
+          .setValue(preferences.templates.defaultType)
+          .onChange((value) => {
+            save({
+              ...preferences,
+              templates: {
+                ...preferences.templates,
+                defaultType: value as TemplateType,
+              },
+            });
+          });
+      });
+
+    const templateTypes: Array<{ key: TemplateType; label: string }> = [
+      { key: "issue", label: "Issue" },
+      { key: "task", label: "Task" },
+      { key: "project", label: "Project" },
+      { key: "team", label: "Team" },
+      { key: "product", label: "Product" },
+      { key: "member", label: "Member" },
+      { key: "feature_unit", label: "Feature Unit" },
+    ];
+
+    templateTypes.forEach((templateType) => {
+      new Setting(containerEl)
+        .setName(`${templateType.label} template file`)
+        .setDesc("File name under template root directory")
+        .addText((text) =>
+          text
+            .setValue(preferences.templates.typeMap[templateType.key])
+            .setPlaceholder(`${templateType.key}-template.md`)
+            .onChange((value) => {
+              save({
+                ...preferences,
+                templates: {
+                  ...preferences.templates,
+                  typeMap: {
+                    ...preferences.templates.typeMap,
+                    [templateType.key]: value.trim(),
+                  },
+                },
+              });
+            })
+        );
+    });
 
     const projectsManager = new Projects({
       target: containerEl,

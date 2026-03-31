@@ -16,7 +16,7 @@ const projectRoot = path.resolve(__dirname, "..");
 const preferredDefaultVaultPath = "/Users/barry/git/siyuan/obsidian";
 const preferredDefaultTemplatesPath = "/Users/barry/git/siyuan/obsidian/templates";
 const legacyPluginIds = ["obsidian-projects", "pprojects"];
-const defaultTemplatesSourceDir = path.join(projectRoot, "templates", "default");
+const defaultTemplatesSourceDir = path.join(projectRoot, "templates", "system");
 
 const exists = async (targetPath) => {
     try {
@@ -193,10 +193,10 @@ if (!vaultPath) {
 const resolvedVaultPath = path.resolve(vaultPath);
 const templatesPath = path.resolve(
     cliTemplatesPath ??
-        envTemplatesPath ??
-        (resolvedVaultPath === preferredDefaultVaultPath
-            ? preferredDefaultTemplatesPath
-            : path.join(resolvedVaultPath, "templates"))
+    envTemplatesPath ??
+    (resolvedVaultPath === preferredDefaultVaultPath
+        ? preferredDefaultTemplatesPath
+        : path.join(resolvedVaultPath, "templates"))
 );
 const obsidianConfigDir = path.join(resolvedVaultPath, ".obsidian");
 const pluginsRootDir = path.join(obsidianConfigDir, "plugins");

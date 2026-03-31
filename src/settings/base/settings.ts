@@ -191,6 +191,21 @@ export type LinkBehavior = "open-note" | "open-editor";
 
 export type FirstDayOfWeek = "sunday" | "monday" | "default";
 
+export type TemplateType =
+  | "issue"
+  | "task"
+  | "project"
+  | "team"
+  | "product"
+  | "member"
+  | "feature_unit";
+
+export type TemplateConfig = {
+  readonly rootDir: string;
+  readonly defaultType: TemplateType;
+  readonly typeMap: Record<TemplateType, string>;
+};
+
 export type ProjectsPluginPreferences = {
   readonly projectSizeLimit: number;
   readonly frontmatter: {
@@ -199,6 +214,7 @@ export type ProjectsPluginPreferences = {
   readonly locale: {
     firstDayOfWeek: FirstDayOfWeek;
   };
+  readonly templates: TemplateConfig;
   readonly commands: ShowCommand[];
   readonly linkBehavior: LinkBehavior;
 };

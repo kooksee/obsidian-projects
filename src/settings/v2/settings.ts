@@ -90,6 +90,19 @@ export const DEFAULT_SETTINGS: ProjectsPluginSettings<
     locale: {
       firstDayOfWeek: "default",
     },
+    templates: {
+      rootDir: "templates/system",
+      defaultType: "task",
+      typeMap: {
+        issue: "issue-template.md",
+        task: "task-template.md",
+        project: "project-template.md",
+        team: "team-template.md",
+        product: "product-template.md",
+        member: "member-template.md",
+        feature_unit: "feature-unit-template.md",
+      },
+    },
     commands: [],
     linkBehavior: "open-editor",
   },
@@ -172,6 +185,19 @@ export const DEFAULT_PREFERENCES: ProjectsPluginPreferences = {
   locale: {
     firstDayOfWeek: "default",
   },
+  templates: {
+    rootDir: "templates/system",
+    defaultType: "task",
+    typeMap: {
+      issue: "issue-template.md",
+      task: "task-template.md",
+      project: "project-template.md",
+      team: "team-template.md",
+      product: "product-template.md",
+      member: "member-template.md",
+      feature_unit: "feature-unit-template.md",
+    },
+  },
   commands: [],
   linkBehavior: "open-editor",
 };
@@ -179,9 +205,27 @@ export const DEFAULT_PREFERENCES: ProjectsPluginPreferences = {
 export function resolvePreferences(
   unresolved: Partial<ProjectsPluginPreferences>
 ): ProjectsPluginPreferences {
+  const unresolvedTemplates = unresolved.templates;
+
   return {
     ...DEFAULT_PREFERENCES,
     ...unresolved,
+    frontmatter: {
+      ...DEFAULT_PREFERENCES.frontmatter,
+      ...unresolved.frontmatter,
+    },
+    locale: {
+      ...DEFAULT_PREFERENCES.locale,
+      ...unresolved.locale,
+    },
+    templates: {
+      ...DEFAULT_PREFERENCES.templates,
+      ...unresolvedTemplates,
+      typeMap: {
+        ...DEFAULT_PREFERENCES.templates.typeMap,
+        ...unresolvedTemplates?.typeMap,
+      },
+    },
   };
 }
 

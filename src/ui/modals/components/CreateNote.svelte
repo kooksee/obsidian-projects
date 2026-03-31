@@ -14,7 +14,7 @@
   import { i18n } from "src/lib/stores/i18n";
   import { app } from "src/lib/stores/obsidian";
   import { settings } from "src/lib/stores/settings";
-  import type { ProjectDefinition } from "src/settings/settings";
+  import type { ProjectDefinition, TemplateType } from "src/settings/settings";
   import { onMount } from "svelte";
 
   let inputRef: HTMLInputElement;
@@ -28,18 +28,71 @@
   ) => void;
 
   let templatePath = "";
+  const templateTypeOrder: TemplateType[] = [
+    "issue",
+    "task",
+    "project",
+    "team",
+    "product",
+    "member",
+    "feature_unit",
+  ];
+  const templateTypeLabel: Record<TemplateType, string> = {
+    issue: "Issue",
+    task: "Task",
+    project: "Project",
+    team: "Team",
+    product: "Product",
+    member: "Member",
+    feature_unit: "Feature Unit",
+  };
 
-  $: templates = (project.templates ?? [])
-    .map((path) => path.trim())
-    .filter((path) => path.length > 0);
-  $: hasMultipleTemplates = templates.length > 1;
+  $: templateConfig = $settings.preferences.templates;
+  $: templateRootDir = normalizePath((templateConfig?.rootDir ?? "").trim());
+  $: templateOptions = templateTypeOrder
+    .map((type) => {
+      const fileName = templateConfig?.typeMap?.[type]?.trim() ?? "";
+      if (!fileName) {
+        return null;
+      }
+
+      const path = templateRootDir
+        ? normalizePath(`${templateRootDir}/${fileName}`)
+        : normalizePath(fileName);
+
+      return {
+        label: `${templateTypeLabel[type]} · ${path}`,
+        value: path,
+      };
+    })
+    .filter((item): item is { label: string; value: string } => !!item);
+  $: hasMultipleTemplates = templateOptions.length > 1;
   $: {
-    if (templates.length === 0) {
+    if (templateOptions.length === 0) {
       templatePath = "";
-    } else if (templates.length === 1) {
-      templatePath = templates[0] ?? "";
-    } else if (!templates.includes(templatePath)) {
-      templatePath = templates[0] ?? "";
+    } else if (templateOptions.length === 1) {
+      templatePath = templateOptions[0]?.value ?? "";
+    } else {
+      const defaultType = templateConfig?.defaultType;
+      const defaultFile = defaultType
+        ? templateConfig?.typeMap?.[defaultType]?.trim()
+        : "";
+      const defaultPath = defaultFile
+        ? templateRootDir
+          ? normalizePath(`${templateRootDir}/${defaultFile}`)
+          : normalizePath(defaultFile)
+        : "";
+
+      if (
+        defaultPath &&
+        templateOptions.find((option) => option.value === defaultPath)
+      ) {
+        templatePath = defaultPath;
+      } else if (
+        !templateOptions.find((option) => option.value === templatePath)
+      ) {
+        templatePath = templateOptions[0]?.value ?? "";
+      }
     }
   }
 
@@ -136,10 +189,7 @@
         <Select
           value={templatePath}
           on:change={({ detail: value }) => (templatePath = value)}
-          options={templates.map((path) => ({
-            label: path,
-            value: path,
-          }))}
+          options={templateOptions}
           placeholder={$i18n.t("modals.note.create.templatePath.none") ?? ""}
           allowEmpty
         />
