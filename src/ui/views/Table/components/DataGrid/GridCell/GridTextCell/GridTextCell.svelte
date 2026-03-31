@@ -76,7 +76,13 @@
       return input;
     }
 
-    const unfinished = input?.trim().match(/^\[\[([^\]]+)$/);
+    const trimmedInput = input?.trim() ?? "";
+
+    if (!trimmedInput || /^!?\[\[\s*$/.test(trimmedInput)) {
+      return null;
+    }
+
+    const unfinished = trimmedInput.match(/^\[\[([^\]]+)$/);
     if (unfinished?.[1]) {
       input = unfinished[1].trim();
     }
@@ -221,7 +227,7 @@
   }}
   onCut={() => {
     navigator.clipboard.writeText(value?.toString() || "");
-    onChange(undefined);
+    onChange(null);
   }}
   onPaste={async () => {
     const pasted = await navigator.clipboard.readText();
