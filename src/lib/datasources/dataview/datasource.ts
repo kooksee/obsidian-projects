@@ -1,6 +1,5 @@
 import { produce } from "immer";
 import type { DataviewApi, Link } from "obsidian-dataview";
-import type { TableResult } from "obsidian-dataview/lib/api/plugin-api";
 import {
   emptyDataFrame,
   type DataField,
@@ -74,12 +73,12 @@ export class DataviewDataSource extends DataSource {
         field.name !== f
           ? field
           : {
-              ...field,
-              typeConfig: {
-                ...this.project.fieldConfig?.[f],
-                ...field.typeConfig,
-              },
-            }
+            ...field,
+            typeConfig: {
+              ...this.project.fieldConfig?.[f],
+              ...field.typeConfig,
+            },
+          }
       );
     }
 
@@ -128,12 +127,17 @@ export class DataviewDataSource extends DataSource {
   }
 }
 
-function parseTableResult(value: TableResult): Array<Record<string, any>> {
+type DataviewTableResult = {
+  headers: string[];
+  values: unknown[][];
+};
+
+function parseTableResult(value: DataviewTableResult): Array<Record<string, any>> {
   const headers: string[] = value.headers;
 
   const rows: Array<Record<string, any>> = [];
 
-  value.values.forEach((row) => {
+  value.values.forEach((row: unknown[]) => {
     const values: Record<string, any> = {};
 
     headers.forEach((header, index) => {
