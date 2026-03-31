@@ -194,6 +194,7 @@ describe("clean up commands", () => {
             member: "member-template.md",
             feature_unit: "feature-unit-template.md",
           },
+          customTypes: {},
         },
         commands: [...validCommands, ...invalidCommands, ...duplicatedCommands],
         linkBehavior: "open-editor",

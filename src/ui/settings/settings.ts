@@ -293,11 +293,11 @@ export class ProjectsSettingTab extends PluginSettingTab {
       .setName("Add custom type")
       .addText((text) => {
         text.setPlaceholder("key (e.g. epic)");
-        text.inputEl.dataset.role = "custom-type-key";
+        text.inputEl.dataset["role"] = "custom-type-key";
       })
       .addText((text) => {
         text.setPlaceholder("label (e.g. Epic)");
-        text.inputEl.dataset.role = "custom-type-label";
+        text.inputEl.dataset["role"] = "custom-type-label";
       })
       .addExtraButton((btn) =>
         btn.setIcon("plus").setTooltip("Add").onClick(() => {
