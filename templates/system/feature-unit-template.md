@@ -1,9 +1,10 @@
 ---
 title: "{{title}}"
+id: "{{uuid}}"
 type: feature_unit
 state: backlog
 priority: P2
-project:
+project: "{{project}}"
 module:
 owner:
 assignee:

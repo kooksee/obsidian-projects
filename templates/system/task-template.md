@@ -1,10 +1,11 @@
 ---
 title: "{{title}}"
+id: "{{uuid}}"
 type: task
 state: todo
 priority: P2
 estimate: 2
-project:
+project: "{{project}}"
 team:
 owner:
 assignee:

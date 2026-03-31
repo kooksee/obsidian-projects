@@ -1,5 +1,6 @@
 ---
 title: "{{title}}"
+id: "{{uuid}}"
 type: issue
 state: triage
 priority: P2
@@ -8,7 +9,7 @@ source: user-report
 estimate: 3
 sprint:
 milestone:
-project:
+project: "{{project}}"
 team:
 assignee:
 reporter:

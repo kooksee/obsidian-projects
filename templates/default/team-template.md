@@ -1,5 +1,6 @@
 ---
 title: "{{title}}"
+id: "{{uuid}}"
 type: team
 state: active
 lead:

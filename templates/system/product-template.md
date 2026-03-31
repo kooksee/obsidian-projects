@@ -1,5 +1,6 @@
 ---
 title: "{{title}}"
+id: "{{uuid}}"
 type: product
 stage: discovery
 state: active

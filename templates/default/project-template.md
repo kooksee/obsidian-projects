@@ -1,5 +1,6 @@
 ---
 title: "{{title}}"
+id: "{{uuid}}"
 type: project
 state: planned
 priority: P1

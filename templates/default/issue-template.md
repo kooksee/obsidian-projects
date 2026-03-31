@@ -1,10 +1,11 @@
 ---
 title: "{{title}}"
+id: "{{uuid}}"
 type: issue
 state: backlog
 priority: P2
 estimate: 3
-project:
+project: "{{project}}"
 team:
 assignee:
 reporter:
