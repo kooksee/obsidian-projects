@@ -205,7 +205,8 @@
             [dateField.name]: date.toDate(),
           }),
           fields,
-          templatePath
+          templatePath,
+          project.name
         );
       }
     }).open();

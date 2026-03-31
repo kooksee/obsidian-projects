@@ -54,6 +54,7 @@ export const DEFAULT_SETTINGS: ProjectsPluginSettings<
         member: "member-template.md",
         feature_unit: "feature-unit-template.md",
       },
+      customTypes: {},
     },
     commands: [],
     linkBehavior: "open-editor",
@@ -108,6 +109,10 @@ export function resolve(
         typeMap: {
           ...DEFAULT_SETTINGS.preferences.templates.typeMap,
           ...unresolvedPreferences?.templates?.typeMap,
+        },
+        customTypes: {
+          ...DEFAULT_SETTINGS.preferences.templates.customTypes,
+          ...unresolvedPreferences?.templates?.customTypes,
         },
       },
     },

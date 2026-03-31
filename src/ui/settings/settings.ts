@@ -9,8 +9,8 @@ import type {
   LinkBehavior,
   ProjectId,
   ProjectsPluginPreferences,
-  TemplateType,
 } from "src/settings/settings";
+import { BUILTIN_TEMPLATE_TYPES } from "src/settings/settings";
 import { i18n } from "src/lib/stores/i18n";
 
 /**
@@ -165,48 +165,48 @@ export class ProjectsSettingTab extends PluginSettingTab {
           })
       );
 
+    // Build a merged list: built-in + custom types for the default-type dropdown
+    const allTypeEntries: Array<{ key: string; label: string }> = [
+      ...BUILTIN_TEMPLATE_TYPES,
+      ...Object.entries(preferences.templates.customTypes).map(
+        ([key, label]) => ({ key, label })
+      ),
+    ];
+
     new Setting(containerEl)
       .setName("Default template type")
       .setDesc("Used when creating new notes")
       .addDropdown((dropdown) => {
+        allTypeEntries.forEach(({ key, label }) => {
+          dropdown.addOption(key, label);
+        });
         dropdown
-          .addOption("issue", "Issue")
-          .addOption("task", "Task")
-          .addOption("project", "Project")
-          .addOption("team", "Team")
-          .addOption("product", "Product")
-          .addOption("member", "Member")
-          .addOption("feature_unit", "Feature Unit")
           .setValue(preferences.templates.defaultType)
           .onChange((value) => {
             save({
               ...preferences,
               templates: {
                 ...preferences.templates,
-                defaultType: value as TemplateType,
+                defaultType: value,
               },
             });
           });
       });
 
-    const templateTypes: Array<{ key: TemplateType; label: string }> = [
-      { key: "issue", label: "Issue" },
-      { key: "task", label: "Task" },
-      { key: "project", label: "Project" },
-      { key: "team", label: "Team" },
-      { key: "product", label: "Product" },
-      { key: "member", label: "Member" },
-      { key: "feature_unit", label: "Feature Unit" },
-    ];
+    // Built-in template type mappings
+    new Setting(containerEl)
+      .setName("Built-in types")
+      .setDesc("File name for each built-in template type")
+      .setHeading();
 
-    templateTypes.forEach((templateType) => {
+    BUILTIN_TEMPLATE_TYPES.forEach(({ key, label }) => {
       new Setting(containerEl)
-        .setName(`${templateType.label} template file`)
+        .setName(`${label} template file`)
         .setDesc("File name under template root directory")
         .addText((text) =>
           text
-            .setValue(preferences.templates.typeMap[templateType.key])
-            .setPlaceholder(`${templateType.key}-template.md`)
+            .setValue(preferences.templates.typeMap[key] ?? "")
+            .setPlaceholder(`${key}-template.md`)
             .onChange((value) => {
               save({
                 ...preferences,
@@ -214,13 +214,127 @@ export class ProjectsSettingTab extends PluginSettingTab {
                   ...preferences.templates,
                   typeMap: {
                     ...preferences.templates.typeMap,
-                    [templateType.key]: value.trim(),
+                    [key]: value.trim(),
                   },
                 },
               });
             })
         );
     });
+
+    // Custom template types
+    new Setting(containerEl)
+      .setName("Custom types")
+      .setDesc("Add your own template types with custom file mappings")
+      .setHeading();
+
+    const renderCustomTypes = () => {
+      // Remove previous custom type elements
+      containerEl
+        .querySelectorAll(".projects-custom-template-type")
+        .forEach((el) => el.remove());
+
+      const anchor = containerEl.querySelector(
+        ".projects-custom-template-add"
+      );
+
+      Object.entries(preferences.templates.customTypes).forEach(
+        ([key, label]) => {
+          const setting = new Setting(containerEl)
+            .setName(`${label} (${key})`)
+            .setDesc("File name under template root directory")
+            .addText((text) =>
+              text
+                .setValue(preferences.templates.typeMap[key] ?? "")
+                .setPlaceholder(`${key}-template.md`)
+                .onChange((value) => {
+                  save({
+                    ...preferences,
+                    templates: {
+                      ...preferences.templates,
+                      typeMap: {
+                        ...preferences.templates.typeMap,
+                        [key]: value.trim(),
+                      },
+                    },
+                  });
+                })
+            )
+            .addExtraButton((btn) =>
+              btn.setIcon("trash").setTooltip("Remove").onClick(() => {
+                const { [key]: _label, ...restCustom } =
+                  preferences.templates.customTypes;
+                const { [key]: _file, ...restMap } =
+                  preferences.templates.typeMap;
+                save({
+                  ...preferences,
+                  templates: {
+                    ...preferences.templates,
+                    customTypes: restCustom,
+                    typeMap: restMap,
+                    defaultType:
+                      preferences.templates.defaultType === key
+                        ? "task"
+                        : preferences.templates.defaultType,
+                  },
+                });
+                renderCustomTypes();
+              })
+            );
+          setting.settingEl.addClass("projects-custom-template-type");
+          if (anchor) {
+            anchor.before(setting.settingEl);
+          }
+        }
+      );
+    };
+
+    const addSetting = new Setting(containerEl)
+      .setName("Add custom type")
+      .addText((text) => {
+        text.setPlaceholder("key (e.g. epic)");
+        text.inputEl.dataset.role = "custom-type-key";
+      })
+      .addText((text) => {
+        text.setPlaceholder("label (e.g. Epic)");
+        text.inputEl.dataset.role = "custom-type-label";
+      })
+      .addExtraButton((btn) =>
+        btn.setIcon("plus").setTooltip("Add").onClick(() => {
+          const keyInput = addSetting.settingEl.querySelector(
+            'input[data-role="custom-type-key"]'
+          ) as HTMLInputElement | null;
+          const labelInput = addSetting.settingEl.querySelector(
+            'input[data-role="custom-type-label"]'
+          ) as HTMLInputElement | null;
+          const key = keyInput?.value?.trim().replace(/\s+/g, "_") ?? "";
+          const label = labelInput?.value?.trim() ?? "";
+          if (!key || !label) return;
+          // Avoid overwriting a built-in type
+          if (BUILTIN_TEMPLATE_TYPES.some((t) => t.key === key)) return;
+
+          save({
+            ...preferences,
+            templates: {
+              ...preferences.templates,
+              customTypes: {
+                ...preferences.templates.customTypes,
+                [key]: label,
+              },
+              typeMap: {
+                ...preferences.templates.typeMap,
+                [key]: preferences.templates.typeMap[key] ?? `${key}-template.md`,
+              },
+            },
+          });
+          if (keyInput) keyInput.value = "";
+          if (labelInput) labelInput.value = "";
+          renderCustomTypes();
+        })
+      );
+    addSetting.settingEl.addClass("projects-custom-template-add");
+
+    renderCustomTypes();
 
     const projectsManager = new Projects({
       target: containerEl,

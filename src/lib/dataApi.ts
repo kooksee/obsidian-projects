@@ -98,7 +98,8 @@ export class DataApi {
   async createNote(
     record: DataRecord,
     fields: DataField[],
-    templatePath: string
+    templatePath: string,
+    projectName?: string
   ): Promise<void> {
     let content = "";
 
@@ -111,6 +112,8 @@ export class DataApi {
           title: () => getNameFromPath(record.id),
           date: (format) => moment().format(format || "YYYY-MM-DD"),
           time: (format) => moment().format(format || "HH:mm"),
+          project: () => projectName ?? "",
+          uuid: () => uuidv4(),
         });
 
         const templateFrontmatter = F.pipe(

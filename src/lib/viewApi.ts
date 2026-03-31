@@ -14,13 +14,13 @@ import type { DataSource } from "./datasources";
  * ViewApi provides an write API for views.
  */
 export class ViewApi {
-  constructor(readonly dataSource: DataSource, readonly dataApi: DataApi) {}
+  constructor(readonly dataSource: DataSource, readonly dataApi: DataApi) { }
 
-  addRecord(record: DataRecord, fields: DataField[], templatePath: string) {
+  addRecord(record: DataRecord, fields: DataField[], templatePath: string, projectName?: string) {
     if (this.dataSource.includes(record.id)) {
       dataFrame.addRecord(record);
     }
-    this.dataApi.createNote(record, fields ?? [], templatePath);
+    this.dataApi.createNote(record, fields ?? [], templatePath, projectName);
   }
 
   updateRecord(record: DataRecord, fields: DataField[]) {

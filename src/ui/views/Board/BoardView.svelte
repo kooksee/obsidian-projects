@@ -226,7 +226,8 @@
               : {}
           ),
           fields,
-          templatePath
+          templatePath,
+          project.name
         );
       }).open();
     };

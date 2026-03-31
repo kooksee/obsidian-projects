@@ -14,7 +14,8 @@
   import { i18n } from "src/lib/stores/i18n";
   import { app } from "src/lib/stores/obsidian";
   import { settings } from "src/lib/stores/settings";
-  import type { ProjectDefinition, TemplateType } from "src/settings/settings";
+  import type { ProjectDefinition } from "src/settings/settings";
+  import { BUILTIN_TEMPLATE_TYPES } from "src/settings/settings";
   import { onMount } from "svelte";
 
   let inputRef: HTMLInputElement;
@@ -28,40 +29,35 @@
   ) => void;
 
   let templatePath = "";
-  const templateTypeOrder: TemplateType[] = [
-    "issue",
-    "task",
-    "project",
-    "team",
-    "product",
-    "member",
-    "feature_unit",
-  ];
-  const templateTypeLabel: Record<TemplateType, string> = {
-    issue: "Issue",
-    task: "Task",
-    project: "Project",
-    team: "Team",
-    product: "Product",
-    member: "Member",
-    feature_unit: "Feature Unit",
-  };
+
+  /** Build a label map: key → display label (built-in + custom) */
+  function buildLabelMap(
+    customTypes: Record<string, string>
+  ): Record<string, string> {
+    const map: Record<string, string> = {};
+    BUILTIN_TEMPLATE_TYPES.forEach(({ key, label }) => {
+      map[key] = label;
+    });
+    Object.entries(customTypes).forEach(([key, label]) => {
+      map[key] = label;
+    });
+    return map;
+  }
 
   $: templateConfig = $settings.preferences.templates;
   $: templateRootDir = normalizePath((templateConfig?.rootDir ?? "").trim());
-  $: templateOptions = templateTypeOrder
-    .map((type) => {
-      const fileName = templateConfig?.typeMap?.[type]?.trim() ?? "";
-      if (!fileName) {
-        return null;
-      }
+  $: labelMap = buildLabelMap(templateConfig?.customTypes ?? {});
+  $: templateOptions = Object.entries(templateConfig?.typeMap ?? {})
+    .map(([type, fileName]) => {
+      const trimmed = fileName?.trim() ?? "";
+      if (!trimmed) return null;
 
       const path = templateRootDir
-        ? normalizePath(`${templateRootDir}/${fileName}`)
-        : normalizePath(fileName);
+        ? normalizePath(`${templateRootDir}/${trimmed}`)
+        : normalizePath(trimmed);
 
       return {
-        label: `${templateTypeLabel[type]} · ${path}`,
+        label: `${labelMap[type] ?? type} · ${path}`,
         value: path,
       };
     })

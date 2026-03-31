@@ -42,13 +42,14 @@ export class CreateNoteModal extends Modal {
       props: {
         name: this.project.defaultName
           ? interpolateTemplate(this.project.defaultName, {
-              date: (format) => moment().format(format || "YYYY-MM-DD"),
-              time: (format) => moment().format(format || "HH:mm"),
-            })
+            date: (format) => moment().format(format || "YYYY-MM-DD"),
+            time: (format) => moment().format(format || "HH:mm"),
+            project: () => this.project.name ?? "",
+          })
           : nextUniqueFileName(
-              this.getNewNotesFolder(this.project),
-              get(i18n).t("modals.note.create.untitled")
-            ),
+            this.getNewNotesFolder(this.project),
+            get(i18n).t("modals.note.create.untitled")
+          ),
         project: this.project,
         onSave: (
           name: string,

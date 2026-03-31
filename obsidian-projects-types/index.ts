@@ -80,12 +80,13 @@ export class ViewApi {
   addRecord(
     record: DataRecord,
     fields: DataField[],
-    templatePath: string
-  ): void {}
-  updateRecord(record: DataRecord, fields: DataField[]): void {}
-  deleteRecord(recordId: string): void {}
-  updateField(field: DataField): void {}
-  deleteField(field: string): void {}
+    templatePath: string,
+    projectName?: string
+  ): void { }
+  updateRecord(record: DataRecord, fields: DataField[]): void { }
+  deleteRecord(recordId: string): void { }
+  updateField(field: DataField): void { }
+  deleteField(field: string): void { }
 }
 
 export type DataSource = FolderDataSource | TagDataSource | DataviewDataSource;
@@ -139,9 +140,9 @@ export interface ProjectViewProps<T = Record<string, any>> {
 }
 
 export abstract class ProjectView<T = Record<string, any>> {
-  async onData(result: DataQueryResult): Promise<void> {}
-  async onOpen(props: ProjectViewProps<T>): Promise<void> {}
-  async onClose(): Promise<void> {}
+  async onData(result: DataQueryResult): Promise<void> { }
+  async onOpen(props: ProjectViewProps<T>): Promise<void> { }
+  async onClose(): Promise<void> { }
   abstract getViewType(): string;
   abstract getDisplayName(): string;
   abstract getIcon(): string;

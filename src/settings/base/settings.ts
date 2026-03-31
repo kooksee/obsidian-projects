@@ -191,7 +191,11 @@ export type LinkBehavior = "open-note" | "open-editor";
 
 export type FirstDayOfWeek = "sunday" | "monday" | "default";
 
-export type TemplateType =
+/**
+ * Built-in template type keys. Users can also define custom types via
+ * `TemplateConfig.customTypes`.
+ */
+export type BuiltinTemplateType =
   | "issue"
   | "task"
   | "project"
@@ -200,10 +204,28 @@ export type TemplateType =
   | "member"
   | "feature_unit";
 
+/** Any template type key — built-in or user-defined. */
+export type TemplateType = string;
+
+export const BUILTIN_TEMPLATE_TYPES: ReadonlyArray<{
+  key: BuiltinTemplateType;
+  label: string;
+}> = [
+    { key: "issue", label: "Issue" },
+    { key: "task", label: "Task" },
+    { key: "project", label: "Project" },
+    { key: "team", label: "Team" },
+    { key: "product", label: "Product" },
+    { key: "member", label: "Member" },
+    { key: "feature_unit", label: "Feature Unit" },
+  ];
+
 export type TemplateConfig = {
   readonly rootDir: string;
   readonly defaultType: TemplateType;
-  readonly typeMap: Record<TemplateType, string>;
+  readonly typeMap: Record<string, string>;
+  /** User-defined template types: key → display label */
+  readonly customTypes: Record<string, string>;
 };
 
 export type ProjectsPluginPreferences = {

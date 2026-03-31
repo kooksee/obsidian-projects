@@ -145,7 +145,7 @@ export default class ProjectsPlugin extends Plugin {
                             project,
                             async (name, templatePath, project) => {
                                 const record = createDataRecord(name, project);
-                                await get(api).createNote(record, [], templatePath);
+                                await get(api).createNote(record, [], templatePath, project.name);
                             }
                         ).open();
                     }

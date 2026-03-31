@@ -299,7 +299,8 @@
       api.addRecord(
         createDataRecord(name, project, values),
         fields,
-        templatePath
+        templatePath,
+        project.name
       );
     }).open();
   }

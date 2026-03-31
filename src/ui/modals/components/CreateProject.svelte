@@ -43,6 +43,7 @@
   $: defaultName = interpolateTemplate(project.defaultName ?? "", {
     date: (format) => moment().format(format || "YYYY-MM-DD"),
     time: (format) => moment().format(format || "HH:mm"),
+    project: () => project.name ?? "",
   });
 
   $: ({ name } = project);
