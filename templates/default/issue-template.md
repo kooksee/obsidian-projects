@@ -9,7 +9,8 @@ team:
 assignee:
 reporter:
 labels: []
-created: "{{date:YYYY-MM-DDTHH:mm}}"
+created:
+updated:
 tags:
   - issue
 ---

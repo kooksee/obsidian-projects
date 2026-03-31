@@ -112,16 +112,29 @@ export class DataApi {
           date: (format) => moment().format(format || "YYYY-MM-DD"),
           time: (format) => moment().format(format || "HH:mm"),
         });
+
+        const templateFrontmatter = F.pipe(
+          content,
+          decodeFrontMatter,
+          E.fold(
+            () => ({} as Record<string, any>),
+            (right) => right ?? {}
+          )
+        );
+
+        if (
+          Object.prototype.hasOwnProperty.call(templateFrontmatter, "created") &&
+          (templateFrontmatter["created"] === null ||
+            templateFrontmatter["created"] === "") &&
+          (record.values["created"] === undefined ||
+            record.values["created"] === null ||
+            record.values["created"] === "")
+        ) {
+          record.values["created"] = moment().format("YYYY-MM-DDTHH:mm");
+        }
+
         if (record.values["tags"]) {
-          const templateTags = F.pipe(
-            content,
-            decodeFrontMatter,
-            E.map((frontmatter) => frontmatter["tags"]),
-            E.fold(
-              () => [],
-              (right) => right ?? [] // handle `null`
-            )
-          );
+          const templateTags = templateFrontmatter["tags"] ?? [];
           //@ts-ignore explict input in `createDataRecord()`
           const tagSet: Set<string> = new Set(
             templateTags.concat(record.values["tags"])
@@ -182,39 +195,61 @@ export function doUpdateRecord(
     data,
     decodeFrontMatter,
     E.map((frontmatter) => {
-      return Object.fromEntries(
-        Object.entries({ ...frontmatter, ...record.values })
-          .map((entry) => {
-            if (isDate(entry[1])) {
-              const isDatetime = fields.find(
-                (field) =>
-                  field.name === entry[0] &&
-                  field.type === DataFieldType.Date &&
-                  (field.typeConfig?.time ||
-                    entry[1].getHours() ||
-                    entry[1].getMinutes() ||
-                    entry[1].getSeconds() ||
-                    entry[1].getMilliseconds())
-              );
-
-              const dateValue = dayjs(entry[1]);
-              if (!dateValue.isValid()) {
-                return entry;
-              }
-
-              return produce(entry, (draft) => {
-                draft[1] = dateValue.format(
-                  isDatetime ? "YYYY-MM-DDTHH:mm" : "YYYY-MM-DD"
+      const normalizeValues = (source: Record<string, any>) =>
+        Object.fromEntries(
+          Object.entries(source)
+            .map((entry) => {
+              if (isDate(entry[1])) {
+                const isDatetime = fields.find(
+                  (field) =>
+                    field.name === entry[0] &&
+                    field.type === DataFieldType.Date &&
+                    (field.typeConfig?.time ||
+                      entry[1].getHours() ||
+                      entry[1].getMinutes() ||
+                      entry[1].getSeconds() ||
+                      entry[1].getMilliseconds())
                 );
-              });
-            }
-            return entry;
-          })
-          .filter(
-            (entry) =>
-              !fields.find((field) => field.name === entry[0] && field.derived)
-          )
-      );
+
+                const dateValue = dayjs(entry[1]);
+                if (!dateValue.isValid()) {
+                  return entry;
+                }
+
+                return produce(entry, (draft) => {
+                  draft[1] = dateValue.format(
+                    isDatetime ? "YYYY-MM-DDTHH:mm" : "YYYY-MM-DD"
+                  );
+                });
+              }
+              return entry;
+            })
+            .filter(
+              (entry) =>
+                !fields.find((field) => field.name === entry[0] && field.derived)
+            )
+        );
+
+      const currentValues = normalizeValues(frontmatter);
+      const mergedValues = normalizeValues({ ...frontmatter, ...record.values });
+      const shouldAutoUpdateUpdated =
+        Object.prototype.hasOwnProperty.call(frontmatter, "updated") ||
+        Object.prototype.hasOwnProperty.call(record.values, "updated");
+
+      if (shouldAutoUpdateUpdated) {
+        const { updated: _currentUpdated, ...currentComparable } = currentValues;
+        const { updated: _nextUpdated, ...nextComparable } = mergedValues;
+        const hasMeaningfulChange =
+          JSON.stringify(currentComparable) !== JSON.stringify(nextComparable);
+
+        if (hasMeaningfulChange) {
+          mergedValues["updated"] = moment().format("YYYY-MM-DDTHH:mm");
+        } else if (Object.prototype.hasOwnProperty.call(currentValues, "updated")) {
+          mergedValues["updated"] = currentValues["updated"];
+        }
+      }
+
+      return mergedValues;
     }),
     E.chain((updated) =>
       encodeFrontMatter(data, updated, getDefaultStringType())

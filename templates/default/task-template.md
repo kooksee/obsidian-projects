@@ -10,7 +10,8 @@ owner:
 assignee:
 labels: []
 due:
-created: "{{date:YYYY-MM-DDTHH:mm}}"
+created:
+updated:
 tags:
   - task
 ---

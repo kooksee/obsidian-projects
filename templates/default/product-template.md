@@ -10,6 +10,7 @@ target_release:
 success_metrics: []
 labels: []
 created: "{{date:YYYY-MM-DD}}"
+updated:
 tags:
   - product
 ---

@@ -11,6 +11,7 @@ start: "{{date:YYYY-MM-DD}}"
 target:
 labels: []
 success_metrics: []
+updated:
 tags:
   - project
 ---
