@@ -1,5 +1,5 @@
 import { produce } from "immer";
-import type { DataviewApi, Link } from "obsidian-dataview";
+import type { DataviewAPI, Link } from "obsidian-dataview";
 import {
   emptyDataFrame,
   type DataField,
@@ -33,7 +33,7 @@ export class DataviewDataSource extends DataSource {
     readonly fileSystem: IFileSystem,
     project: ProjectDefinition,
     preferences: ProjectsPluginPreferences,
-    readonly api: DataviewApi
+    readonly api: DataviewAPI
   ) {
     super(project, preferences);
   }
@@ -47,7 +47,7 @@ export class DataviewDataSource extends DataSource {
       return emptyDataFrame;
     }
 
-    const result = await this.api.query(
+    const result = await (this.api as any).query(
       this.project.dataSource.config.query ?? "",
       undefined,
       {

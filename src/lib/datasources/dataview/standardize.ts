@@ -19,8 +19,9 @@ export function standardizeValues(
     }
 
     if (Array.isArray(value)) {
-      value.map((v) => (typeof v === "object" ? standardizeObject(v) : v));
-      res[field] = value;
+      res[field] = value.map((v) =>
+        typeof v === "object" ? standardizeObject(v) : v
+      );
     } else if (typeof value === "object") {
       res[field] = standardizeObject(value);
     } else {
@@ -38,4 +39,6 @@ function standardizeObject(value: any) {
   if ("ts" in value) {
     return dayjs(value.ts).format("YYYY-MM-DD");
   }
+
+  return value;
 }

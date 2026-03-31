@@ -16,12 +16,7 @@ const prod = process.argv[2] === "production";
 const buildOptions = {
     plugins: [
         esbuildSvelte({
-            compilerOptions: {
-                css: "injected",
-                compatibility: {
-                    componentApi: 4,
-                },
-            },
+            compilerOptions: { css: "injected" },
             preprocess: sveltePreprocess(),
         }),
         replace({
