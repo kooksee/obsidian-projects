@@ -11,7 +11,7 @@ success_metrics: []
 labels: []
 created: "{{date:YYYY-MM-DD}}"
 tags:
-	- product
+  - product
 ---
 
 # {{title}}

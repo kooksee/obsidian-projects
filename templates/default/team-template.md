@@ -10,7 +10,7 @@ capacity_per_cycle:
 labels: []
 created: "{{date:YYYY-MM-DD}}"
 tags:
-	- team
+  - team
 ---
 
 # {{title}}

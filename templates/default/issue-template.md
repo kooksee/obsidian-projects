@@ -11,7 +11,7 @@ reporter:
 labels: []
 created: "{{date:YYYY-MM-DDTHH:mm}}"
 tags:
-	- issue
+  - issue
 ---
 
 # {{title}}

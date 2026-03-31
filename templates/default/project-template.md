@@ -12,7 +12,7 @@ target:
 labels: []
 success_metrics: []
 tags:
-	- project
+  - project
 ---
 
 # {{title}}

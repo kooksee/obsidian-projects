@@ -10,7 +10,7 @@ skills: []
 labels: []
 created: "{{date:YYYY-MM-DD}}"
 tags:
-	- member
+  - member
 ---
 
 # {{title}}
