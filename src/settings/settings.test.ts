@@ -20,7 +20,6 @@ const v1demo: v1.ProjectsPluginSettings<
       recursive: false,
       fieldConfig: {},
       defaultName: "",
-      templates: [],
       dataview: false,
       query: "",
       excludedNotes: [],
@@ -145,7 +144,6 @@ const v2demo: v2.ProjectsPluginSettings<
     {
       fieldConfig: {},
       defaultName: "",
-      templates: [],
       excludedNotes: [],
       isDefault: false,
       dataSource: {

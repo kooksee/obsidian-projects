@@ -49,7 +49,6 @@ describe("resolve v2", () => {
           id: "foo",
           fieldConfig: {},
           defaultName: "",
-          templates: [],
           excludedNotes: [],
           isDefault: false,
           dataSource: {
@@ -120,7 +119,6 @@ describe("clean up commands", () => {
           id: "sample-project",
           fieldConfig: {},
           defaultName: "",
-          templates: [],
           excludedNotes: [],
           isDefault: false,
           dataSource: {
@@ -150,7 +148,6 @@ describe("clean up commands", () => {
           id: "sample-archive",
           fieldConfig: {},
           defaultName: "",
-          templates: [],
           excludedNotes: [],
           isDefault: false,
           dataSource: {

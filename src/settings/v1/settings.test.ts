@@ -47,7 +47,6 @@ describe("resolve v2", () => {
           id: "foo",
           fieldConfig: {},
           defaultName: "",
-          templates: [],
           excludedNotes: [],
           isDefault: false,
           views: [],

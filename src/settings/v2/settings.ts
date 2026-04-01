@@ -14,7 +14,6 @@ export type ProjectDefinition<ViewDefinition> = {
   readonly fieldConfig: { [field: string]: FieldConfig };
   readonly views: ViewDefinition[];
   readonly defaultName: string;
-  readonly templates: string[];
   readonly excludedNotes: string[];
   readonly isDefault: boolean;
   readonly dataSource: DataSource;
@@ -61,7 +60,6 @@ export type ProjectsPluginSettings<T, P> = {
 export const DEFAULT_PROJECT: UnsavedProjectDefinition = {
   fieldConfig: {},
   defaultName: "",
-  templates: [],
   excludedNotes: [],
   isDefault: false,
   dataSource: {
