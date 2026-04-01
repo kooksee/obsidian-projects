@@ -31,7 +31,7 @@
   onClose={() => {
     isOpen = false;
   }}
-  placement="auto"
+  placement="bottom-end"
 >
   <slot />
 </Popover>

@@ -34,21 +34,29 @@
     align-items: center;
     width: auto;
   }
+  .left {
+    flex-shrink: 0;
+  }
   .middle {
     flex: 1;
     overflow-x: auto;
     text-align: center;
-    min-width: 200px;
+    min-width: 0;
   }
   .right {
     display: flex;
     align-items: center;
     gap: var(--size-4-2);
-    flex-wrap: wrap;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
   }
   .isMobile {
     flex-direction: column;
     align-items: stretch;
+  }
+  .isMobile .middle {
+    min-width: 0;
   }
   .isMobile .right {
     align-items: stretch;
