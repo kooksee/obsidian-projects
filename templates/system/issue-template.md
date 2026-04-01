@@ -7,22 +7,22 @@ priority: P2
 severity: S2
 source: user-report
 estimate: 3
-sprint:
-milestone:
+sprint: ""
+milestone: ""
 project: "{{project}}"
-team:
-assignee:
-reporter:
-qa:
-environment:
-found_in:
-expected_fix_version:
+team: ""
+assignee: ""
+reporter: ""
+qa: ""
+environment: ""
+found_in: ""
+expected_fix_version: ""
 blocked_by: []
 blocks: []
 labels: []
-created:
-updated:
-resolved_at:
+created: ""
+updated: ""
+resolved_at: ""
 tags:
   - issue
 ---

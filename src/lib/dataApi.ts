@@ -102,6 +102,7 @@ export class DataApi {
     projectName?: string
   ): Promise<void> {
     let content = "";
+    let mutableValues = { ...record.values };
 
     if (templatePath) {
       const normalizedTemplatePath = normalizePath(templatePath.trim());
@@ -129,20 +130,20 @@ export class DataApi {
           Object.prototype.hasOwnProperty.call(templateFrontmatter, "created") &&
           (templateFrontmatter["created"] === null ||
             templateFrontmatter["created"] === "") &&
-          (record.values["created"] === undefined ||
-            record.values["created"] === null ||
-            record.values["created"] === "")
+          (mutableValues["created"] === undefined ||
+            mutableValues["created"] === null ||
+            mutableValues["created"] === "")
         ) {
-          record.values["created"] = moment().format("YYYY-MM-DDTHH:mm");
+          mutableValues["created"] = moment().format("YYYY-MM-DDTHH:mm");
         }
 
-        if (record.values["tags"]) {
+        if (mutableValues["tags"]) {
           const templateTags = templateFrontmatter["tags"] ?? [];
           //@ts-ignore explict input in `createDataRecord()`
           const tagSet: Set<string> = new Set(
-            templateTags.concat(record.values["tags"])
+            templateTags.concat(mutableValues["tags"])
           );
-          record.values["tags"] = [...tagSet];
+          mutableValues["tags"] = [...tagSet];
         }
       } else {
         console.warn(
@@ -151,10 +152,11 @@ export class DataApi {
       }
     }
 
+    const mutableRecord: DataRecord = { id: record.id, values: mutableValues };
     const file = await this.fileSystem.create(record.id, content);
 
     await this.updateFile(file, (data) =>
-      doUpdateRecord(data, fields, record)
+      doUpdateRecord(data, fields, mutableRecord)
     )();
   }
 

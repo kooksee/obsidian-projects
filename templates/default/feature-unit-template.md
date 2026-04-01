@@ -5,10 +5,10 @@ type: feature_unit
 state: backlog
 priority: P2
 project: "{{project}}"
-module:
-owner:
-assignee:
-estimate:
+module: ""
+owner: ""
+assignee: ""
+estimate: ""
 labels: []
 created: "{{date:YYYY-MM-DDTHH:mm}}"
 tags:

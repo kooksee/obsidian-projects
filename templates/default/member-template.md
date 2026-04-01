@@ -3,10 +3,10 @@ title: "{{title}}"
 id: "{{uuid}}"
 type: member
 state: active
-role:
-team:
-email:
-phone:
+role: ""
+team: ""
+email: ""
+phone: ""
 skills: []
 labels: []
 created: "{{date:YYYY-MM-DD}}"

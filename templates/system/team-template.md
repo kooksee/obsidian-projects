@@ -3,14 +3,14 @@ title: "{{title}}"
 id: "{{uuid}}"
 type: team
 state: active
-lead:
-backup_lead:
+lead: ""
+backup_lead: ""
 members: []
-timezone:
-capacity_per_cycle:
+timezone: ""
+capacity_per_cycle: ""
 labels: []
 created: "{{date:YYYY-MM-DD}}"
-updated:
+updated: ""
 tags:
   - team
 ---

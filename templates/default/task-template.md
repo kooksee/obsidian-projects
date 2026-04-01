@@ -6,13 +6,13 @@ state: todo
 priority: P2
 estimate: 2
 project: "{{project}}"
-team:
-owner:
-assignee:
+team: ""
+owner: ""
+assignee: ""
 labels: []
-due:
-created:
-updated:
+due: ""
+created: ""
+updated: ""
 tags:
   - task
 ---

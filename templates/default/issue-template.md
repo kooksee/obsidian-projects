@@ -6,12 +6,12 @@ state: backlog
 priority: P2
 estimate: 3
 project: "{{project}}"
-team:
-assignee:
-reporter:
+team: ""
+assignee: ""
+reporter: ""
 labels: []
-created:
-updated:
+created: ""
+updated: ""
 tags:
   - issue
 ---

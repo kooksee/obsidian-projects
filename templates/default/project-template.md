@@ -5,14 +5,14 @@ type: project
 state: planned
 priority: P1
 health: green
-owner:
-lead:
-team:
+owner: ""
+lead: ""
+team: ""
 start: "{{date:YYYY-MM-DD}}"
-target:
+target: ""
 labels: []
 success_metrics: []
-updated:
+updated: ""
 tags:
   - project
 ---

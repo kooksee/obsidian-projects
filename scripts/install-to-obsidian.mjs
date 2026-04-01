@@ -14,7 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, "..");
 const preferredDefaultVaultPath = "/Users/barry/git/siyuan/obsidian";
-const preferredDefaultTemplatesPath = "/Users/barry/git/siyuan/obsidian/templates";
+const preferredDefaultTemplatesPath = "/Users/barry/git/siyuan/obsidian/templates/system";
 const legacyPluginIds = ["obsidian-projects", "pprojects"];
 const defaultTemplatesSourceDir = path.join(projectRoot, "templates", "system");
 
@@ -196,7 +196,7 @@ const templatesPath = path.resolve(
     envTemplatesPath ??
     (resolvedVaultPath === preferredDefaultVaultPath
         ? preferredDefaultTemplatesPath
-        : path.join(resolvedVaultPath, "templates"))
+        : path.join(resolvedVaultPath, "templates", "system"))
 );
 const obsidianConfigDir = path.join(resolvedVaultPath, ".obsidian");
 const pluginsRootDir = path.join(obsidianConfigDir, "plugins");

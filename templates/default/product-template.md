@@ -5,13 +5,13 @@ type: product
 stage: discovery
 state: active
 priority: P1
-owner:
-team:
-target_release:
+owner: ""
+team: ""
+target_release: ""
 success_metrics: []
 labels: []
 created: "{{date:YYYY-MM-DD}}"
-updated:
+updated: ""
 tags:
   - product
 ---
