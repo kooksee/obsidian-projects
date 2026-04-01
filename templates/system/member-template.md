@@ -9,7 +9,7 @@ email: ""
 phone: ""
 skills: []
 labels: []
-created: "{{date:YYYY-MM-DD}}"
+created: ""
 tags:
   - member
 _fieldConfig:

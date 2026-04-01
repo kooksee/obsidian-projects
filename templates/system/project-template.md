@@ -8,7 +8,7 @@ health: green
 owner: ""
 lead: ""
 team: ""
-start: "{{date:YYYY-MM-DD}}"
+start: ""
 target: ""
 labels: []
 success_metrics: []

@@ -10,7 +10,7 @@ owner: ""
 assignee: ""
 estimate: ""
 labels: []
-created: "{{date:YYYY-MM-DDTHH:mm}}"
+created: ""
 tags:
   - feature-unit
 _fieldConfig:

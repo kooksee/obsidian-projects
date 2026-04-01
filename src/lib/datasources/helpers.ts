@@ -31,7 +31,9 @@ export function parseRecords(
       switch (field.type) {
         case DataFieldType.Date:
           if (typeof value === "string") {
-            record.values[field.name] = dayjs(value).toDate();
+            const parsed = dayjs(value);
+            record.values[field.name] =
+              value && parsed.isValid() ? parsed.toDate() : undefined;
           }
           break;
         case DataFieldType.Number:
