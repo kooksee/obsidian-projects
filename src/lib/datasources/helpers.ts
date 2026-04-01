@@ -80,14 +80,16 @@ export function detectFields(records: DataRecord[]): DataField[] {
     });
   });
 
-  return Object.entries(valuesByField).map<DataField>(([field, values]) => ({
-    name: field,
-    type: typeFromValues(values),
-    identifier: false,
-    derived: false,
-    repeated: values.some(Array.isArray),
-    typeConfig: {},
-  }));
+  return Object.entries(valuesByField)
+    .filter(([field]) => !field.startsWith("_"))
+    .map<DataField>(([field, values]) => ({
+      name: field,
+      type: typeFromValues(values),
+      identifier: false,
+      derived: false,
+      repeated: values.some(Array.isArray),
+      typeConfig: {},
+    }));
 }
 
 // typeFromValues returns the field type for a collection of values. This is an
