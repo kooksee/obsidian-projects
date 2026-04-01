@@ -14,6 +14,45 @@ created: "{{date:YYYY-MM-DD}}"
 updated: ""
 tags:
   - product
+_fieldConfig:
+  stage:
+    display: badge
+    options:
+      - discovery
+      - definition
+      - development
+      - launch
+      - growth
+      - sunset
+    colorMap:
+      discovery: "#868e96"
+      definition: "#228be6"
+      development: "#7950f2"
+      launch: "#f59f00"
+      growth: "#40c057"
+      sunset: "#fa5252"
+  state:
+    display: badge
+    options:
+      - active
+      - on_hold
+      - archived
+    colorMap:
+      active: "#40c057"
+      on_hold: "#f59f00"
+      archived: "#868e96"
+  priority:
+    display: badge
+    options:
+      - P0
+      - P1
+      - P2
+      - P3
+    colorMap:
+      P0: "#fa5252"
+      P1: "#f59f00"
+      P2: "#228be6"
+      P3: "#868e96"
 ---
 
 # {{title}}

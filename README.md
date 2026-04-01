@@ -39,7 +39,7 @@ To get started using Projects, press **Ctrl+P** (or **Cmd+P** on macOS) to open 
 
 ## Default templates
 
-Starter templates are available in `templates/default/`:
+Starter templates are available in `templates/system/`:
 
 - `issue-template.md`
 - `task-template.md`
@@ -49,10 +49,10 @@ Starter templates are available in `templates/default/`:
 - `member-template.md`
 - `feature-unit-template.md`
 
-When you run `npm run install:obsidian`, these templates are now synced automatically to:
+When you run `npm run install:obsidian`, these templates are synced automatically to:
 
-- `/Users/barry/git/siyuan/obsidian/templates` (preferred default vault)
-- or `<vault>/templates` for other vaults
+- `/Users/barry/git/siyuan/obsidian/templates/system` (preferred default vault)
+- or `<vault>/templates/system` for other vaults
 
 You can override the target with:
 

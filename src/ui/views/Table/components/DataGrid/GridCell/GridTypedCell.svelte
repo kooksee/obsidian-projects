@@ -18,6 +18,14 @@
   import { GridNumberCell } from "./GridNumberCell";
   import { GridTextCell } from "./GridTextCell";
   import { GridListCell } from "./GridListCell";
+  import {
+    Badge,
+    ProgressBar,
+    Link,
+    Image,
+    Tag,
+    Format,
+  } from "src/ui/components/DisplayRenderers";
 
   export let value: Optional<DataValue>;
   export let onChange: (value: Optional<DataValue>) => void;
@@ -25,9 +33,35 @@
   export let rowindex: number;
   export let colindex: number;
   export let selected: boolean;
+
+  $: display = column.typeConfig?.display;
 </script>
 
-{#if column.repeated && isOptionalList(value)}
+{#if display === "badge" && typeof value === "string"}
+  <GridCell {rowindex} {selected} {colindex} {column} on:mousedown on:navigate>
+    <Badge {value} colorMap={column.typeConfig?.colorMap ?? {}} />
+  </GridCell>
+{:else if display === "progress-bar" && typeof value === "number"}
+  <GridCell {rowindex} {selected} {colindex} {column} on:mousedown on:navigate>
+    <ProgressBar {value} />
+  </GridCell>
+{:else if display === "link" && typeof value === "string"}
+  <GridCell {rowindex} {selected} {colindex} {column} on:mousedown on:navigate>
+    <Link {value} />
+  </GridCell>
+{:else if display === "image" && typeof value === "string"}
+  <GridCell {rowindex} {selected} {colindex} {column} on:mousedown on:navigate>
+    <Image {value} />
+  </GridCell>
+{:else if display === "tag" && typeof value === "string"}
+  <GridCell {rowindex} {selected} {colindex} {column} on:mousedown on:navigate>
+    <Tag {value} />
+  </GridCell>
+{:else if display === "format" && column.typeConfig?.format && (typeof value === "string" || typeof value === "number")}
+  <GridCell {rowindex} {selected} {colindex} {column} on:mousedown on:navigate>
+    <Format {value} format={column.typeConfig.format} />
+  </GridCell>
+{:else if column.repeated && isOptionalList(value)}
   <GridListCell
     {selected}
     {rowindex}

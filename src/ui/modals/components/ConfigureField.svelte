@@ -79,6 +79,27 @@
     };
   }
 
+  function handleDisplayChange(value: CustomEvent<string>) {
+    const display = value.detail || undefined;
+    field = {
+      ...field,
+      typeConfig: {
+        ...field.typeConfig,
+        display: display as any,
+      },
+    };
+  }
+
+  const displayOptions = [
+    { label: "Default", value: "" },
+    { label: "Badge", value: "badge" },
+    { label: "Progress Bar", value: "progress-bar" },
+    { label: "Link", value: "link" },
+    { label: "Image", value: "image" },
+    { label: "Tag", value: "tag" },
+    { label: "Format", value: "format" },
+  ];
+
   $: options = [
     { label: $i18n.t("data-types.string"), value: DataFieldType.String },
     { label: $i18n.t("data-types.number"), value: DataFieldType.Number },
@@ -161,6 +182,32 @@
         <Switch
           checked={field.typeConfig?.time ?? false}
           on:check={handleTimeChange}
+        />
+      </SettingItem>
+    {/if}
+    <SettingItem
+      name="Display"
+      description="Choose how to render this field's value"
+    >
+      <Select
+        value={field.typeConfig?.display ?? ""}
+        options={displayOptions}
+        on:change={handleDisplayChange}
+      />
+    </SettingItem>
+    {#if field.typeConfig?.display === "format"}
+      <SettingItem
+        name="Format"
+        description={"Use {value} as placeholder, e.g. '¥{value}'"}
+      >
+        <TextInput
+          value={field.typeConfig?.format ?? "{value}"}
+          on:input={(e) => {
+            field = {
+              ...field,
+              typeConfig: { ...field.typeConfig, format: e.detail },
+            };
+          }}
         />
       </SettingItem>
     {/if}

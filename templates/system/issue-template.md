@@ -25,6 +25,52 @@ updated: ""
 resolved_at: ""
 tags:
   - issue
+_fieldConfig:
+  state:
+    display: badge
+    options:
+      - triage
+      - backlog
+      - in_progress
+      - in_review
+      - verified
+      - done
+      - wontfix
+    colorMap:
+      triage: "#868e96"
+      backlog: "#adb5bd"
+      in_progress: "#228be6"
+      in_review: "#f59f00"
+      verified: "#20c997"
+      done: "#40c057"
+      wontfix: "#fa5252"
+  priority:
+    display: badge
+    options:
+      - P0
+      - P1
+      - P2
+      - P3
+    colorMap:
+      P0: "#fa5252"
+      P1: "#f59f00"
+      P2: "#228be6"
+      P3: "#868e96"
+  severity:
+    display: badge
+    options:
+      - S0
+      - S1
+      - S2
+      - S3
+    colorMap:
+      S0: "#fa5252"
+      S1: "#f59f00"
+      S2: "#228be6"
+      S3: "#868e96"
+  estimate:
+    display: format
+    format: "{value}h"
 ---
 
 # {{title}}

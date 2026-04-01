@@ -12,6 +12,17 @@ labels: []
 created: "{{date:YYYY-MM-DD}}"
 tags:
   - member
+_fieldConfig:
+  state:
+    display: badge
+    options:
+      - active
+      - on_leave
+      - offboarded
+    colorMap:
+      active: "#40c057"
+      on_leave: "#f59f00"
+      offboarded: "#868e96"
 ---
 
 # {{title}}

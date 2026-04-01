@@ -12,6 +12,14 @@
   import Date from "./Date.svelte";
   import Datetime from "./Datetime.svelte";
   import Number from "./Number.svelte";
+  import {
+    Badge,
+    ProgressBar,
+    Link,
+    Image,
+    Tag,
+    Format,
+  } from "src/ui/components/DisplayRenderers";
 
   export let fields: DataField[];
   export let record: DataRecord;
@@ -21,12 +29,25 @@
 
 {#each fields as field (field.name)}
   {@const value = record.values[field.name]}
+  {@const display = field.typeConfig?.display}
   {#if value !== undefined && value !== null}
     <div class="field-label">
       <div class="setting-item-description" style:margin-bottom={"4px"}>
         {field.name}
       </div>
-      {#if field.repeated}
+      {#if display === "badge" && typeof value === "string"}
+        <Badge {value} colorMap={field.typeConfig?.colorMap ?? {}} />
+      {:else if display === "progress-bar" && typeof value === "number"}
+        <ProgressBar {value} />
+      {:else if display === "link" && typeof value === "string"}
+        <Link {value} />
+      {:else if display === "image" && typeof value === "string"}
+        <Image {value} />
+      {:else if display === "tag" && typeof value === "string"}
+        <Tag {value} />
+      {:else if display === "format" && field.typeConfig?.format && (typeof value === "string" || typeof value === "number")}
+        <Format {value} format={field.typeConfig.format} />
+      {:else if field.repeated}
         {#if field.type === DataFieldType.String}
           <Tags {field} {value} />
         {/if}

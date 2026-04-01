@@ -177,10 +177,26 @@ export type RelationFieldConfig = {
   };
 };
 
+export type DisplayType =
+  | "badge"
+  | "progress-bar"
+  | "link"
+  | "image"
+  | "format"
+  | "tag";
+
+export type DisplayFieldConfig = {
+  display?: DisplayType;
+  colorMap?: Record<string, string>;
+  format?: string;
+  description?: string;
+};
+
 export type FieldConfig =
   & StringFieldConfig
   & DateFieldConfig
-  & RelationFieldConfig;
+  & RelationFieldConfig
+  & DisplayFieldConfig;
 
 export type ShowCommand = {
   readonly project: string;

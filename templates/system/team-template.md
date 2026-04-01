@@ -13,6 +13,17 @@ created: "{{date:YYYY-MM-DD}}"
 updated: ""
 tags:
   - team
+_fieldConfig:
+  state:
+    display: badge
+    options:
+      - active
+      - restructuring
+      - disbanded
+    colorMap:
+      active: "#40c057"
+      restructuring: "#f59f00"
+      disbanded: "#868e96"
 ---
 
 # {{title}}

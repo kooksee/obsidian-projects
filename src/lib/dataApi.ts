@@ -17,6 +17,7 @@ import { decodeFrontMatter, encodeFrontMatter } from "./metadata";
 import { i18n } from "./stores/i18n";
 import { settings } from "./stores/settings";
 import { interpolateTemplate } from "./templates/interpolate";
+import type { FieldConfig } from "src/settings/settings";
 
 import { function as F, task as T, either as E, taskEither as TE } from "fp-ts";
 import {
@@ -125,6 +126,29 @@ export class DataApi {
             (right) => right ?? {}
           )
         );
+
+        // Extract _fieldConfig from template and merge into project settings
+        if (templateFrontmatter["_fieldConfig"] && projectName) {
+          const templateFieldConfig = templateFrontmatter["_fieldConfig"] as Record<string, FieldConfig>;
+          const currentSettings = get(settings);
+          const project = currentSettings.projects.find((p) => p.name === projectName);
+          if (project) {
+            const mergedFieldConfig = { ...project.fieldConfig };
+            for (const [fieldName, config] of Object.entries(templateFieldConfig)) {
+              mergedFieldConfig[fieldName] = {
+                ...mergedFieldConfig[fieldName],
+                ...config,
+              };
+            }
+            settings.updateProject({ ...project, fieldConfig: mergedFieldConfig });
+          }
+          // Remove _fieldConfig from note content
+          delete templateFrontmatter["_fieldConfig"];
+          content = F.pipe(
+            encodeFrontMatter(content, templateFrontmatter, getDefaultStringType()),
+            E.getOrElse(() => content)
+          );
+        }
 
         if (
           Object.prototype.hasOwnProperty.call(templateFrontmatter, "created") &&
